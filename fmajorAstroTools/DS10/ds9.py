@@ -426,6 +426,7 @@ hb=""" in the following command list, "A==>B==>C" means this command is equivale
     d.zscale:  'scale==>zscale'
     d.match.?: 'frame==>match==>?'
     d.lock.?:  'frame==>lock==>?'
+    d.zoomfit: set zoom to fit
 
 # getter commands: type the command in ipython console and get results
     d.newFrame: open a new frame
@@ -700,6 +701,9 @@ class ds10(DS9, Region):#<==
             print(e)
             raise Exception("invaild value or data type for {}: {}, type {}".\
                     format(sys._getframe().f_code.co_name, value, type(value)))
+    @property
+    def zoomfit(self):
+        self.set("zoom to fit")
     @property
     def bin(self):
         aux = self.get("bin factor")

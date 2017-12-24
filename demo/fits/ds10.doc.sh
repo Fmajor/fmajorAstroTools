@@ -6,6 +6,7 @@ title () {
     tput bold; tput setaf 6; echo "${title}"; tput setaf 7; tput sgr0
     echo "${title}::" >> $RSTDOC
     echo "" >> $RSTDOC
+    read -p"press ENTER to continue"
 }
 
 ndoing () {
@@ -18,12 +19,13 @@ nsdoing () {
 doing () {
     title
     tput setaf 2; echo "\$ ${todo}"; tput setaf 7;
+    read -p"press ENTER to run this command"
     eval ${todo}
     echo "    \$ ${todo}" >> $RSTDOC
-    read -p"press ENTER to continue"
 }
 sdoing () {
     tput setaf 2; echo "\$ ${todo}"; tput setaf 7;
+    read -p"press ENTER to run this command"
     eval ${todo} || exit 1
     echo "    \$ ${todo}" >> $RSTDOC
     read -p"press ENTER to continue"
