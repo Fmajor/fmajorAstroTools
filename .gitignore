@@ -1,0 +1,13 @@
+*~
+*.swp
+*.swn
+*.swo
+*.pyc
+__pycache__
+*egg-info
+build/
+*.so
+*.doc.sh.rst
+.DS_Store
+.idea
+*so.dSYM

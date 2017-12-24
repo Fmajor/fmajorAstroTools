@@ -1,0 +1,66 @@
+a = 2334.
+b = 23423
+c = 'asdfasdf'
+d = "123123"
+e = '12312.21'
+f = 123e2
+g = [2334., 23423, 'asdfasdf', asdfasdf, "123123", '12312.21', 123e2, '1.21']
+h = "[2334., 23423, 'asdfasdf', asdfasdf, "123123", '12312.21', 123e2, '1.21']"
+i = "{"good":"yes", "bad":"no", "hehe":123.}"
+l = [2334., 23423,
+      'asdfasdf', asdfasdf, "123123",
+      '12312.21', 123e2, '1.21']
+k = [ 2334., 23423, 'asdfasdf', asdfasdf, "123123",
+    '12312.21', 123e2,
+    '1.21']
+z = {"good":"yes",
+      "bad":"no",
+      "hehe":123.0}
+[globalField1] # this is a field full of equations
+a = 1
+b = asdfasdf # we can also have comment here
+# and here, we do not have a blank line above, so globalField2 is also a global field
+[globalField2] # this is a field of array data
+id      ra         dec
+0      0         0
+1      2         8
+8      0         2
+[globalField3]
+3        8         2
+4      3            5
+4      3            5
+4      3            5
+# now we want to make a named field, the following blank line is necessary
+@config1
+config1Default = 1.0
+config2Default = '2'
+[field1]
+a = b
+c = d
+[field2]
+id      ra         dec
+3        8         2
+4      3            5
+@config2
+[field3]
+asd = dsa
+dsa = asd
+[field4]
+id      ra         dec
+3        8         2
+3        8         2
+4      3            5
+#data = equalLoad(filename)
+#data is like
+#{
+#    'globalField1':{'a':'1', 'b':'asdfasdf'},
+#    'globalField2':[['id','ra','dec']['0','0','0'],[1,2,8],[8,0,2]],
+#    'config1':{
+#        'field1':{'a':'b', 'c':'d'},
+#        'field2':[['id','ra','dec'],['3','8','2'],['4','3','5']],
+#    }
+#    'config2':{
+#        'field3':{'asd':'dsa', 'dsa':'asd'}
+#    }
+#}
+

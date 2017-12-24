@@ -1,0 +1,16 @@
+#!/bin/bash
+exts=("txt" "lst")
+last="${@: -1}"
+scriptPath=$(python3 -c 'import fmajorAstroTools as f;import os.path as p;print(p.join(p.dirname(p.abspath(f.__file__)), "DS10/ds10_bin.py"))')
+if [[ ${last} == "--savefig="* || ${last} == "--exit" ]]; then
+    PY="ipython3 "
+else
+    PY="ipython3 -i "
+fi
+
+
+if [[ ${1##*.} =~ $exts ]]; then
+    ${PY} --no-banner -- ${scriptPath} `cat $1` ${@:2}
+else
+    ${PY} --no-banner -- ${scriptPath} $@
+fi

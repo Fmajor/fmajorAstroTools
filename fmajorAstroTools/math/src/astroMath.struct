@@ -1,0 +1,21 @@
+/* This file was automatically generated.  Do not edit! */
+struct Vertex {
+    double x;
+    double y;
+    struct Vertex *prev;
+    struct Vertex *next;
+    int flag;
+};
+struct Polygon {
+    struct Vertex *P;
+    int num;
+};
+struct Vector2 {
+    double x;
+    double y;
+};
+struct Vector3 {
+    double x;
+    double y;
+    double z;
+};

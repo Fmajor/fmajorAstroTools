@@ -1,0 +1,90 @@
+ds10
+========
+A python wrapper of ds9 (using pyds9), it can open 2D, 1D or binary table by a single command "ds10 \*.fits".
+It will open a image using ds9, open a 1D array using matplotlib (also with a PyQt control window) and open binary table using ipython interactive mode.
+
+Dependences
+-----------
+* ds9: make sure you can open ds9 from your terminal.
+* python3
+* pyqt4 (optional): you will have a contral panel when open 1D array if you install ``pyqt4``.
+
+In macOS, you can install it by::
+
+    brew install sip
+    brew tap cartr/qt4
+    brew tap-pin cartr/qt4
+    brew install qt@4
+    brew install cartr/qt4/pyqt@4 --with-python3
+
+usage
+-----
+::
+
+    ds10 filenames_group0 [options] [filenames_group1 [options]]
+        -n: norm the plot
+        -i: initial plot(not use wcs)
+        -e: do expression before plot. Example: -e"{}/1000"
+        -a: use all frames in fits files
+        --name: create a new ds9 window or connect to a named ds9 window
+        --alter: show fits alternatively.
+            Example: ds10 1.fits 2.fits -f1,2
+                show 1.fits[1] 2.fits[1] 1.fits[2] 2.fits[2]
+                    instead of 1.fits[1,2] 2.fits[1,2]
+        -f: set frames to use. Example: -f1,2,3 -f1~3,5~7
+    
+        -b: filter files to open using header information
+        -B: filter extensions to open using header information
+    
+        --width: width for the ds9 window
+        --height: width for the ds9 window
+        --regions: open region file
+        --selfRegions: open region file with the same name
+        --exec: make exec after plot
+        --exit: not stay in python interactive mode
+        --notOpen: not open 2D image and 1D array, just print filter result
+    
+        --: no options for args before
+    
+        -p: set plot style. Example: -p'color=red,ls=dashed', for 1D plot
+        --xlim: '(start,end)|tight' for 1D plot
+        --ylim: 'updown(down,up)' for 1D plot
+
+demos
+----
+In these demos, command after \$ is the bash input, the remaining is the output. we use the (...) to omit some long outputs.
+
+You can generate the demo result and test ds10 by yourself::
+
+    cd demo/fits
+    bash ds10.doc.sh
+
+* Open an empty ds9 window. You must exit it manually to type exit() in the ipython console or use Ctrl-D.::
+
+    $ ds10
+* Open a fits in existing ds9 window. ``-a`` means open all extension in the fits file, it is equivalent to use ``-f0,1``, or ``-f0~1``, but extension 0 have no data, so we only add 1 new frame into the ds9::
+
+    $ ds10 N20150904S0254.fits -a --exit
+* Open fits from file list 'test_list.txt' in a new ds9 window with name 'test' using the ``--name=`` argument. Only \*.txt files are identified as file list, other file will be opened as fits file.::
+
+    $ ds10 test_list.txt -f1 --name=test --exit
+
+* ds10 will open 2d image by ds9, 1d array by matplotlib and table in ipython interactive console, use d.t to see all tables and d.tn to see names of all tables, in ipython::
+
+    $ ds10 N20150903S0254.fits bbody* spec-* -a
+
+* Filter files and extensions to open using -b and -B arguments, here we also use --notOpen and --exit argument to not really open this files(only show their filter results) and exit the interactive mode::
+
+    $ imheader N2015090* bbody*  -k"object,date,exptime,FRMNAME" -s -a
+    $ ds10 N2015090* bbody* -a --notOpen --exit
+    $ ds10 N2015090* bbody* -b"{exptime}" -a --notOpen --exit
+    $ ds10 N2015090* bbody* -b"(not){exptime}" -a --notOpen --exit
+    $ ds10 N2015090* bbody* -b"(not)(float({exptime})<1)(and){DATE}>'2015-09-03'" -a --notOpen --exit
+    $ ds10 N2015090* bbody* -B"(not)(float({exptime})<1)(and){DATE}>'2015-09-03'" -a --notOpen --exit
+* Adding new fits image into the 'test' ds9 window. We stay at the interactive mode and give you a list of command to playwith. the ``--exec`` options allow you to run some ds10 command after all the images are loaded::
+
+    $ ds10 N2015*.fits -a 2Trncsci-N20160126S0150-153.fits -f0~8 --name=test_command --exec='d.h;d.hb;d.hpro'
+
+* Here are the most interest functions of ds10: image debug tools using region, we open a new window to test it::
+
+    $ ds10 N20150903*.fits -a 2Trncsci-N20160126S0150-153.fits -f0~4 m2fs_flat* --name=test_regions --exec='d.h;d.hr;d.hc;d.hf'
