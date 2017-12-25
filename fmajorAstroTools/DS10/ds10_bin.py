@@ -29,6 +29,7 @@ usageStr="""ds10 filenames_group0 [options] [filenames_group1 [options]]
     -f: set frames to use. Example: -f1,2,3 -f1~3,5~7
 
     -b: filter files to open using header information
+    --boolFrames: specify which frame to be use for bool filter (default is all frames)
     -B: filter extensions to open using header information
 
     --width: width for the ds9 window

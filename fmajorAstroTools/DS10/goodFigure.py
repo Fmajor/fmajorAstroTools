@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import (print_function, absolute_import, division)
 import sys
+import time
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -478,7 +479,6 @@ class GoodFigure(object):
             thisPlot = self.plots[name]["obj"]
             thisScatter = self.plots[name]["objScatter"]
             self.plots.pop(name)
-            #self.ax.remove(thisPlot)
             thisPlot.remove()
             if thisScatter is not None:
                 thisScatter.remove()
@@ -608,7 +608,6 @@ class GoodFigure(object):
                 f.write(toPrintStr+"\n")
         self.addPlot("plot", "fitting" , xx, yy, color = "red")
         focus.toggle()
-
 
     def toggleHideVisible(self):
         for eachName in self._activeNames:
@@ -1514,6 +1513,7 @@ if haveQt4:
                             self._percentile_button_update = QtGui.QPushButton("U", self)
                             self._percentile_button_update.clicked.connect(self._percentile_button_f)
                             hbox3.addWidget(self._percentile_button_update)
+                    self.app.processEvents()
             return setter
         def visible(self, name):
             setterName = "setVisible"
@@ -1567,7 +1567,7 @@ if haveQt4:
             return setter
         def changeAllVisible(self, state):
             boxType = "visible"
-            thisKeys = self.bodys.keys()
+            thisKeys = list(self.bodys.keys())
             if state == QtCore.Qt.Checked:
                 for eachName in thisKeys:
                     widget = self.getCheckBoxObj(eachName, boxType)
@@ -1580,7 +1580,7 @@ if haveQt4:
                         widget.setChecked(False)
         def changeAllActive(self, state):
             boxType = "active"
-            thisKeys = self.bodys.keys()
+            thisKeys = list(self.bodys.keys())
             if state == QtCore.Qt.Checked:
                 for eachName in thisKeys:
                     widget = self.getCheckBoxObj(eachName, boxType)
@@ -1595,9 +1595,9 @@ if haveQt4:
             ok = SimpleDialog.ok("Do you want to delete all the plots?")
             #text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog', 'Enter your name:')
             if ok:
-                for eachKey in self.bodys.keys():
+                for eachKey in list(self.bodys.keys()):
                     print("remove:", eachKey)
-                    self.removeLine(eachKey)()
+                    self.bodys[eachKey].allObjs['delete'].click()
         def _x_limit_button_f(self):
             start = self._x_limit_start.text()
             end = self._x_limit_end.text()
@@ -1784,7 +1784,7 @@ if haveQt4:
             "ex.getCheckBoxStatus('1111','visible')"
             if boxName not in ["visible", "active", "focus"]:
                 raise("unknown box name: {}".format(boxName))
-            if name not in self.bodys.keys():
+            if name not in list(self.bodys.keys()):
                 raise("unknown name: {}".format(name))
             if boxName=="visible":
                 result =  self.bodys[name].itemAt(0).itemAt(0).widget()
@@ -1825,483 +1825,3 @@ if __name__ == '__main__':
     if haveQt4:
         app = QApplication(sys.argv)
         ex = PlotControl(app=app)
-
-# backup code
-# some notes
-#"text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog', 'Enter your name:')"
-#class PlotDynamic(object):
-    #def __init__(self, ax, x, y):
-        #self.ax = ax
-        #self.figure = ax.get_figure()
-        ## init cursor
-        #self.lx = ax.axhline(color='k')  # the horiz line
-        #self.ly = ax.axvline(color='k')  # the vert line
-        #self.lx.set_alpha(0)
-        #self.ly.set_alpha(0)
-        ## init data
-        #self.x = x
-        #self.y = y
-        #self.length = x.size
-        #self._cursor = False
-        #self._cidOnkey = self.figure.canvas.mpl_connect("key_press_event", self.on_key)
-
-        #self._legend = False
-        #self._legendObj = ax.legend(loc=0)
-        #self._legendObj.set_visible(self._legend)
-
-    #def mouse_move(self, event):
-        #if not event.inaxes: return
-        #x, y = event.xdata, event.ydata
-        #indx = np.searchsorted(self.x, [x])[0]
-        #if indx<self.length:
-            #x = self.x[indx]
-            #y = self.y[indx]
-            ## update the line positions
-            #self.lx.set_ydata(y )
-            #self.ly.set_xdata(x )
-
-            #self.ax.set_title( 'x=%1.2f, y=%1.2f'%(x,y) )
-            #self.figure.canvas.draw()
-
-    #def update(self, x, y):
-        #self.x = x
-        #self.y = y
-        #self.length = x.size
-
-    #def on_key(self, event):
-        #if event.key=="c":
-            #self._cursor = 1 - self._cursor
-            #if self._cursor:
-                #self._cidcursor = self.figure.canvas.mpl_connect('motion_notify_event', self.mouse_move)
-                #self.lx.set_alpha(1)
-                #self.ly.set_alpha(1)
-                #self.figure.canvas.draw()
-            #else:
-                #self.figure.canvas.mpl_disconnect(self._cidcursor)
-                #self.lx.set_alpha(0)
-                #self.ly.set_alpha(0)
-                #self.ax.set_title("")
-                #self.figure.canvas.draw()
-        #elif event.key=="e":
-            #self._legend = 1 - self._legend
-            #self._legendObj.set_visible(self._legend)
-            #self.figure.canvas.draw()
-        #if event.key=="d":
-            #self._cursor = 1 - self._cursor
-            #if self._cursor:
-                #self._cidcursor = self.figure.canvas.mpl_connect('motion_notify_event', self.mouse_move)
-                #self.lx.set_alpha(1)
-                #self.ly.set_alpha(1)
-                #self.figure.canvas.draw()
-            #else:
-                #self.figure.canvas.mpl_disconnect(self._cidcursor)
-                #self.lx.set_alpha(0)
-                #self.ly.set_alpha(0)
-                #self.ax.set_title("")
-                #self.figure.canvas.draw()
-        #if event.key=="D":
-            #self._cursor = 1 - self._cursor
-            #if self._cursor:
-                #self._cidcursor = self.figure.canvas.mpl_connect('motion_notify_event', self.mouse_move)
-                #self.lx.set_alpha(1)
-                #self.ly.set_alpha(1)
-                #self.figure.canvas.draw()
-            #else:
-                #self.figure.canvas.mpl_disconnect(self._cidcursor)
-#backup
-#class GoodFigure(object):
-    #def __init__(self, name="good plot", parent=None, show=True):
-        #self.name = name
-        #self.fig = plt.figure(self.name)
-        #self.ax = self.fig.add_subplot(111)
-        #self.fig.subplots_adjust(left=0.08, right=0.95, top=0.95, bottom=0.05)
-        #self.plots = {}
-        #self.parent=parent
-        #self._cidOnkey = self.fig.canvas.mpl_connect("key_press_event", self.on_key)
-        #self._show=False
-        #plt.ion()
-        #if show:
-            #self._show=True
-            #plt.show()
-        ## active data pair
-        #self.x = np.array([]) # for the mostly used single cursor
-        #self.y = np.array([]) # for the mostly used single cursor
-        #self._activeNumber = 0
-        #self._activeNames = []
-        #self._cursorStr = ""
-        ## init cursor
-        #self._cursor = False
-        #self.ly = self.ax.axvline(color='k')  # the vert line
-        #self.ly.set_alpha(0)
-        #self.lx = self.ax.axhline(color='k')  # the vert line
-        #self.lx.set_alpha(0)
-        ## init legend
-        #self._legend = -1
-        ##
-        #self.app = QApplication([])
-        #self._mainWindow = PlotControlMainWindow(self)
-        ##self._controlWindow = PlotControl(self)
-        #self._controlWindow = self._mainWindow.main_widget
-
-        #self.scatterConfig = {"marker":"o", "s":5, "edgecolor": "none"}
-
-    #def _setLimitType(self, name, configs):
-        #print("limit type: {}".format(name))
-        #if name == "auto":
-            #self.ax.set_ylim(auto=True)
-            #self.ax.relim()
-            #self.ax.autoscale_view(True,True,True)
-            #self.fig.canvas.draw()
-        #elif name == "updown":
-            #thisTop = configs["up"]
-            #thisBottom = configs["down"]
-            #if np.isfinite(thisTop):
-                #self.ax.set_ylim(top=thisTop)
-            #if np.isfinite(thisBottom):
-                #self.ax.set_ylim(bottom=thisBottom)
-            #print("top: {}, bottom: {}".format(thisTop, thisBottom))
-            #self.fig.canvas.draw()
-        #elif name == "updownRej":
-            #self._originData = {}
-            #thisUp = configs["up"]
-            #thisDown = configs["down"]
-            #mup = configs["mup"]
-            #mdown = configs["mdown"]
-            #for eachKey in self.plots:
-                #thisPlot = self.plots[eachKey]["obj"]
-                #thisx = self.plots[eachKey]["x"]
-                #thisy = self.plots[eachKey]["y"]
-                #self._originData[eachKey] = thisy
-                #tempy = thisy.copy()
-                #if np.isfinite(thisUp):
-                    #tempy[tempy>thisUp] = np.nan
-                #if np.isfinite(thisDown):
-                    #tempy[tempy<thisDown] = np.nan
-                #thisPlot.set_ydata(tempy)
-                #thisPlot.set_xdata(thisx)
-            #self.ax.set_ylim(auto=True)
-            #self.ax.set_xlim(auto=True)
-            #self.ax.relim()
-            #self.ax.autoscale_view(True,True,True)
-            #self.fig.canvas.draw()
-            #ydown, yup = self.ax.get_ylim()
-            #ydown -= mdown
-            #yup += mup
-            #self.ax.set_ylim((ydown, yup))
-            #for eachKey in self.plots:
-                #thisPlot = self.plots[eachKey]["obj"]
-                #thisPlot.set_ydata(self._originData[eachKey])
-            #print("top: {}, bottom: {}".format(thisUp, thisDown))
-            #self.fig.canvas.draw()
-        #elif name == "percentile":
-            #up   = -np.inf
-            #down = np.inf
-            #up1 = configs["up1"]
-            #up2 = configs["up2"]
-            #up3 = configs["up3"]
-            #up4 = configs["up4"]
-            #setup = np.isfinite(np.all([up1, up2, up3, up4]))
-            #down1 = configs["down1"]
-            #down2 = configs["down2"]
-            #down3 = configs["down3"]
-            #down4 = configs["down4"]
-            #setdown = np.isfinite(np.all([down1, down2, down3, down4]))
-            #for eachKey in self.plots:
-                #thisy = self.plots[eachKey]["y"]
-                #thisUp = (np.percentile(thisy, up1) + up2) * up3 + up4
-                #thisDown = (np.percentile(thisy, down1) + down2) * down3 + down4
-                #if thisUp > up:
-                    #up = thisUp
-                #if thisDown < down:
-                    #down = thisDown
-            #if setup:
-                #self.ax.set_ylim(top=up)
-            #if setdown:
-                #self.ax.set_ylim(bottom=down)
-
-            #print("top: {}, bottom: {}".format(up, down))
-            #self.fig.canvas.draw()
-        #elif name == "xlimit":
-            #thisStart = configs["start"]
-            #thisEnd = configs["end"]
-            #if np.isfinite(thisStart):
-                #self.ax.set_xlim(left=thisStart)
-            #if np.isfinite(thisEnd):
-                #self.ax.set_xlim(right=thisEnd)
-            #print("start: {}, end: {}".format(thisStart, thisEnd))
-            #self.fig.canvas.draw()
-
-    #def _mouse_move_cursor(self, event):
-        #if not event.inaxes: return
-        #xdata = event.xdata
-        #indx = np.searchsorted(self.x, [xdata])[0]
-        #if indx<self.x.size:
-            #x = self.x[indx]
-            #y = self.y[indx]
-            #self.ly.set_xdata(x)
-            #self.lx.set_ydata(y)
-            #self.ax.set_title( self._cursorStr.format(x,y) )
-        #else:
-            #self.ax.set_title( self._cursorStr.format(self.x[-1],self.y[-1]) )
-        #self.fig.canvas.draw()
-
-    #def _mouse_move_simple_cursor(self, event):
-        #if not event.inaxes: return
-        #x, y = event.xdata, event.ydata
-        #self.lx.set_ydata(y )
-        #self.ly.set_xdata(x )
-        #self.ax.set_title( 'x=%1.2f, y=%1.2f'%(x,y) )
-        #self.fig.canvas.draw()
-
-    #def on_key(self, event):
-        #if self._activeNumber == 0:
-            #return
-        #if event.key=="c":
-            #self._cursor = 1 - self._cursor
-            #if self._cursor:
-                #success = self._openCursor()
-                #if not success:
-                    #self._cursor = 1 - self._cursor
-            #else:
-                #self._closeCursor()
-        #elif event.key=="e":
-            #if self._legend==-1:
-                #self._legendObj = self.ax.legend(loc=0)
-                #self._legendObj.set_visible(self._legend)
-                #self._legend=1
-                #self.fig.canvas.draw()
-            #else:
-                #self._legend = 1 - self._legend
-                #self._legendObj.set_visible(self._legend)
-                #if self._legend == 1:
-                    #self._legendObj = self.ax.legend(loc=0)
-                #self.fig.canvas.draw()
-        #elif event.key=="d":
-            #self._cursor = 1 - self._cursor
-            #if self._cursor:
-                #self._cidcursor = self.fig.canvas.mpl_connect('motion_notify_event', self._mouse_move_simple_cursor)
-                #self.lx.set_alpha(1)
-                #self.ly.set_alpha(1)
-                #self.fig.canvas.draw()
-            #else:
-                #self.fig.canvas.mpl_disconnect(self._cidcursor)
-                #self.lx.set_alpha(0)
-                #self.ly.set_alpha(0)
-                #self.ax.set_title("")
-                #self.fig.canvas.draw()
-        #elif event.key=="D":
-            #self._cursor = 1 - self._cursor
-            #if self._cursor:
-                #self._cidcursor = self.fig.canvas.mpl_connect('motion_notify_event', self.mouse_move)
-                #self.lx.set_alpha(1)
-                #self.ly.set_alpha(1)
-                #self.fig.canvas.draw()
-            #else:
-                #self.fig.canvas.mpl_disconnect(self._cidcursor)
-
-    #def _openCursor(self):
-        #if self.x is not None:
-            #self._cidcursor = self.fig.canvas.mpl_connect(\
-                    #'motion_notify_event', self._mouse_move_cursor)
-            #self.ly.set_alpha(1)
-            #self.lx.set_alpha(1)
-            #self.fig.canvas.draw()
-            #return True
-        #else:
-            #return False
-    #def _closeCursor(self):
-        #self.fig.canvas.mpl_disconnect(self._cidcursor)
-        #self.ly.set_alpha(0)
-        #self.lx.set_alpha(0)
-        #self.ax.set_title("")
-        #self.fig.canvas.draw()
-
-    #def addPlot(self, type, name, x, y, **kwargs):
-        #if not self._show:
-            #plt.show()
-        #if name in self.plots:
-            #print("update: {}".format(name))
-            #thisPlot = self.plots[name]["obj"]
-            #thisPlot.set_xdata(x)
-            #thisPlot.set_ydata(y)
-            #color = thisPlot.get_color()
-            #c = copy.copy(self.scatterConfig)
-            #c.update({"color":color})
-            #if self.plots[name]["objScatter"] is not None:
-                #self.plots[name]["objScatter"].remove()
-                #thisScatter = self.plots[name]["objScatter"]  = self.ax.scatter(x, y, **c)
-            #self.ax.relim()
-            #self.ax.autoscale_view(True,True,True)
-            #self.fig.canvas.draw()
-            #thisDict = thisPlot
-        #else:
-            #print("add new figure: {}".format(name))
-            #kwargs.update({"label":name})
-            #if type=="plot":
-                #c=copy.copy(kwargs)
-                #c.update(kwargs)
-                #thisPlot, = self.ax.plot(x, y, **c)
-                #c = copy.copy(self.scatterConfig)
-                #color = thisPlot.get_color()
-                #c.update({"color":color})
-                #c.update(kwargs);c.pop("label")
-                #thisScatter = self.ax.scatter(x, y, **c)
-            #elif type=="step":
-                #c={"where":"post"}
-                #c.update(kwargs)
-                #thisPlot, = self.ax.step(x, y, **c)
-                #c = copy.copy(self.scatterConfig)
-                #color = thisPlot.get_color()
-                #c.update({"color":color})
-                #c.update(kwargs);c.pop("label")
-                #thisScatter = self.ax.scatter(x, y, **c)
-            #elif type=="simplePlot":
-                #c=copy.copy(kwargs)
-                #c.update(kwargs)
-                #thisPlot, = self.ax.plot(x, y, **c)
-                #c = copy.copy(self.scatterConfig)
-                #color = thisPlot.get_color()
-                #c.update({"color":color})
-                #c.update(kwargs);c.pop("label")
-                #thisScatter = None
-
-            #self._controlWindow.addLine(name)
-            #self.app.processEvents()
-            #self.plots[name] = {}
-            #thisDict = self.plots[name]
-            #thisDict["type"] = type
-            #thisDict["obj"] = thisPlot
-            #thisDict["objScatter"] = thisScatter
-            #thisDict["name"] = name
-            #thisDict["x"] = x
-            #thisDict["y"] = y
-        ## update active values
-        ## this has been done in app
-        ##self._activeNames.append(name)
-        ##self._activeNumber += 1
-        #self.x = x
-        #self.y = y
-        #self._cursorStr = "x={{:.2f}}, {}={{:.2f}}".format(name)
-        #self.fig.canvas.draw()
-        #return thisDict
-
-    #def addSlidePlot(self, type, name, pStart, pEnd, pDatas, reset, x, y, **kwargs):
-        #if name in self.plots:
-            #print("update: {}".format(name))
-            #thisObj = self.plots[name]
-            #thisPlot = self.plots[name]["obj"]
-            #if reset[0]:
-                #thisObj["startPoint"] = pStart
-                #print("update start point: {}".format(pStart))
-            #if reset[1]:
-                #thisObj["endPoint"] = pStart
-                #print("update end point: {}".format(pEnd))
-            #if np.any(reset):
-                #thisObj["pDatas"] = pDatas
-
-            #thisPlot.set_xdata(x)
-            #thisPlot.set_ydata(y)
-            #color = thisPlot.get_color()
-            #c = copy.copy(self.scatterConfig)
-            #c.update({"color":color})
-            #if self.plots[name]["objScatter"] is not None:
-                #self.plots[name]["objScatter"].remove()
-                #thisScatter = self.plots[name]["objScatter"]  = self.ax.scatter(x, y, **c)
-            #self.ax.relim()
-            #self.ax.autoscale_view(True,True,True)
-            #self.fig.canvas.draw()
-            #thisDict = thisPlot
-        #else:
-            #print("add new figure: {}".format(name))
-            #kwargs.update({"label":name})
-            #if type=="plot":
-                #c=copy.copy(kwargs)
-                #c.update(kwargs)
-                #thisPlot, = self.ax.plot(x, y, **c)
-                #c = copy.copy(self.scatterConfig)
-                #color = thisPlot.get_color()
-                #c.update({"color":color})
-                #c.update(kwargs);c.pop("label")
-                #thisScatter = self.ax.scatter(x, y, **c)
-            #elif type=="step":
-                #c={"where":"post"}
-                #c.update(kwargs)
-                #thisPlot, = self.ax.step(x, y, **c)
-                #c = copy.copy(self.scatterConfig)
-                #color = thisPlot.get_color()
-                #c.update({"color":color})
-                #c.update(kwargs);c.pop("label")
-                #thisScatter = self.ax.scatter(x, y, **c)
-            #self._controlWindow.addLine(name)
-            #self.app.processEvents()
-            #self.plots[name] = {}
-            #thisDict = self.plots[name]
-            #thisDict["type"] = type
-            #thisDict["obj"] = thisPlot
-            #thisDict["objScatter"] = thisScatter
-            #thisDict["name"] = name
-            #thisDict["x"] = x
-            #thisDict["y"] = y
-        ## update active values
-        ## this has been done in app
-        ##self._activeNames.append(name) 
-        ##self._activeNumber += 1
-        #self.x = x
-        #self.y = y
-        #self._cursorStr = "x={{:.2f}}, {}={{:.2f}}".format(name)
-        #self.fig.canvas.draw()
-        #return thisDict
-
-    #def _removePlot(self, name): # be called when click X
-        #if self._cursor: # close cursor when delete plot
-            #self._cursor = 1 - self._cursor
-            #self.fig.canvas.mpl_disconnect(self._cidcursor)
-            #self.ly.set_alpha(0)
-            #self.ax.set_title("")
-            #self.fig.canvas.draw()
-        #if name in self.plots: # or it may came from a invaild call
-            #print("remove plot: {}".format(name))
-            #if name in self._activeNames:
-                #self._activeNames.pop(self._activeNames.index(name))
-                #self._activeNumber -= 1
-            #thisPlot = self.plots[name]["obj"]
-            #thisScatter = self.plots[name]["objScatter"]
-            #self.plots.pop(name)
-            ##self.ax.remove(thisPlot)
-            #thisPlot.remove()
-            #if thisScatter is not None:
-                #thisScatter.remove()
-            #self.ax.relim()
-            #self.ax.autoscale_view(True,True,True)
-            #self.fig.canvas.draw()
-            #self.app.processEvents()
-        #else:
-            #raise Exception("invaild call of this functions???")
-    #def _setFocus(self, name): # be called when click focus
-        #if name in self.plots:
-            #print("change focus to {}".format(name))
-            #self.x = self.plots[name]["x"]
-            #self.y = self.plots[name]["y"]
-            #self._cursorStr = "x={{:.2f}}, {}={{:.2f}}".format(name)
-        #else:
-            #print("change focus to None")
-            #self._cursorStr = "x={{:.2f}}, None={{:.2f}}".format(name)
-            #self.x = None
-            #self.y = None
-    #def _setActive(self, name, status):
-        #if name not in self._activeNames and status:
-            #print("set {} active on".format(name))
-            #self._activeNames.append(name)
-            #self._activeNumber += 1
-        #elif name in self._activeNames and not status:
-            #print("set {} active off".format(name))
-            #self._activeNames.pop(self._activeNames.index(name))
-            #self._activeNumber -= 1
-        #else:
-            #raise Exception("information in plot and control window not match!")
-    #def _setVisible(self, name, status):
-        #assert name in self.plots, "name {} not in plots".format(name)
-        #self.plots[name]["obj"].set_visible(status)
-        #if self.plots[name]["objScatter"] is not None:
-            #self.plots[name]["objScatter"].set_visible(status)
-        #self.fig.canvas.draw()

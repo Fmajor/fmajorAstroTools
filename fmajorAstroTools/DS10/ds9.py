@@ -407,11 +407,11 @@ def getDimStr(header):
 
 #<== help strings
 h="""Use:
-    d.hb   some basic commands (about edit, view, zoom .. etc)
-    d.r    commands about regions and plots
-    d.pro  commands to gen projections
-    d.c    documents about the control panel of 1D array (you must install pyqt4)
-    d.f    commands to do operations for frames
+    d.hb    some basic commands (about edit, view, zoom .. etc)
+    d.hr    commands about regions and plots
+    d.hc    documents about the control panel of 1D array (you must install pyqt4)
+    d.hpro  commands to gen projections
+    d.hf    commands to do operations for frames
 """
 hb=""" in the following command list, "A==>B==>C" means this command is equivalent to the menu "A", sub menu "B" and subsub menu "C" in the ds9 window.
 
@@ -454,8 +454,10 @@ hb=""" in the following command list, "A==>B==>C" means this command is equivale
     d.nan:    getter&setter: the color of the nan pixel
     d.limits: getter&setter: the scale limits value
     d.scale:  getter&setter: the scale method, could be linear, log, power, sqrt, squared, asinh, sinh, histogram
+    d.zc:     getter&setter: the zscale contrast
     d.crop:   getter&setter: (cropCenter_x, cropCenter_y, cropSize_x, cropSize_y)
-    d.cropBox:getter&setter: (bottomLeft_x, bottomLeft, upperRight_x, upperRight_y)
+    d.cropnon:getter: set no crop
+    d.cropbox:getter&setter: (bottomLeft_x, bottomLeft, upperRight_x, upperRight_y)
     d.width:  getter&setter: ds9 window width
     d.height: getter&setter: ds9 window height
     d.window: getter&setter: (width, height)
@@ -475,20 +477,20 @@ hr=""" # commands about regions: with getter and setter
     d.sregion:  selected region string for current frame
     d.sregions: info of selected region as a dict for current frame
 # commands about regions: do operations on region
-    d.cleanRegion: delete all regions in this frame
-    d.sa:           select all regions in this frame
-    d.ds:          delete all selected regions in this frame
-    d.sat:         delete all tagged regions in this frame
     d.ms:          give a new tag for all selected regions in this frame
     d.si:          show info about selected regions (as string in a list)
+    d.sa:          select all regions in this frame
+    d.sat:         delete all tagged regions in this frame
     d.ct:          setter: copy selected regions to frame(s)
+    d.ca:          getter: get names for all unique tagged regions in this frame
+                   setter: copy all tagged regions to other frame(s)
     d.us:          getter: try to find regions that have same tag name of the selected regions in other frame
                    setter: update position of regions that have same tag name of the selected regions in other frames
     d.usa:         equivalent to d.us=d.frames
-    d.ca:          getter: get names for all unique tagged regions in this frame
-                   setter: copy all tagged regions to other frame(s)
     d.saut:        same as d.ca, but also select them
     d.sat:         select all tagged regions is this frame (some regions may have the same tag name)
+    d.ds:          delete all selected regions in this frame
+    d.cleanRegion: delete all regions in this frame
 # commands about plot:
     d.ps:   plot or update selected projections
     d.usp:  getter: same as d.us (in help of region)
@@ -793,6 +795,16 @@ class ds10(DS9, Region):#<==
             return
         raise Exception("invaild value or data type for {}: {}, type {}\n\tvalue must be a string in {}".\
                 format(sys._getframe().f_code.co_name, value, type(value), valueList))
+    @property
+    def zc(self):
+        return float(self.get('zscale contrast'))
+    @zc.setter
+    def zc(self, value):
+        self.set('zscale contrast {}'.format(value))
+    @property
+    def cropnone(self):
+        x,y = self.shape
+        self.cropbox=1,1,x,y
     @property
     def crop(self):
         result = self.get("crop").split()
@@ -1918,9 +1930,11 @@ class ds10(DS9, Region):#<==
     def fo(self, values):
         "frame only"
         allFrames = self.frames
+        if isinstance(values, int):
+            values = [values]
         for each in values:
             assert (each in allFrames), each
-        toClose = set(allFrames).difference(set([str(each) for each in values]))
+        toClose = set(allFrames).difference(set([each for each in values]))
         for eachToClose in toClose:
             self.frame = eachToClose
             self.set("frame delete")

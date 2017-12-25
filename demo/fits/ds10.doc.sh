@@ -56,6 +56,8 @@ todo="ds10 N2015090* bbody* -b\"{exptime}\" -a --notOpen --exit"
 sdoing
 todo="ds10 N2015090* bbody* -b\"(not){exptime}\" -a --notOpen --exit"
 sdoing
+todo="ds10 N2015090* bbody* -b\"(not){exptime}\" --boolFrames=0 -a --notOpen --exit"
+sdoing
 todo="ds10 N2015090* bbody* -b\"(not)(float({exptime})<1)(and){DATE}>'2015-09-03'\" -a --notOpen --exit"
 sdoing
 todo="ds10 N2015090* bbody* -B\"(not)(float({exptime})<1)(and){DATE}>'2015-09-03'\" -a --notOpen --exit"
