@@ -2,20 +2,6 @@ ds10
 ========
 A python wrapper of ds9 (using pyds9).
 
-Dependences
------------
-* ds9: make sure you can open ds9 from your terminal.
-* python3
-* pyqt4 (optional): you will have a contral panel when open 1D array if you install ``pyqt4``.
-
-In macOS, you can install it by::
-
-    brew install sip
-    brew tap cartr/qt4
-    brew tap-pin cartr/qt4
-    brew install qt@4
-    brew install cartr/qt4/pyqt@4 --with-python3
-
 usage
 -----
 ::

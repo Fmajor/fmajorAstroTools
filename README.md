@@ -4,7 +4,6 @@ fmajorAstroUtils
 Developing and debuging now, please wait until this Line disappear
 --------------------------------------------------
 
-
 Fmajor's tools for astronomy data reduction.
 
 * [imheader](doc/imheader.rst): A command line tool to check the headers or do filtering for fits file using header information.
@@ -26,3 +25,27 @@ Fmajor's tools for astronomy data reduction.
     * You can tell ds9 want to do after it loads all the files (e.g. change the pan, zoom, rotate, limits...)
 
 You will like these tools if you have numerious fits image to check.
+
+Dependences
+-----------
+* python3
+* pyqt: you should install it from github by
+
+    ``pip install [--user] git+https://github.com/ericmandel/pyds9.git#egg=pyds9``
+* ds9: make sure you can open ds9 from your terminal.
+* pyqt4 (optional): you will have a contral panel when open 1D array if you install ``pyqt4``.
+
+In macOS, you can install it by
+```
+    brew install sip
+    brew tap cartr/qt4
+    brew tap-pin cartr/qt4
+    brew install qt@4
+    brew install cartr/qt4/pyqt@4 --with-python3
+```
+
+Install
+-------
+```
+python3 setup.py install
+```

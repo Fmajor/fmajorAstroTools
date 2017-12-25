@@ -4,7 +4,6 @@ try:
 except NameError:
     pass
 from   pyds9 import DS9
-#import pyfits
 import astropy.io.fits as pyfits
 import numpy as np
 import matplotlib
