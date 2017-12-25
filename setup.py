@@ -13,9 +13,9 @@ version="0.0"
 packages = ["fmajorAstroTools"]
 install_requires=['ipython', 'matplotlib', 'numpy', 'astropy', "colorama", "ipdb", "scipy", "pyds9"]
 author='Jin Wu'
-author_email='wujinnnnn@.gmail.com'
+author_email='wujinnnnn@gmail.com'
 license='MIT'
-description="Astro Tools."
+description="Fmajor's Astro Tools."
 long_description=""
 
 # for scripts

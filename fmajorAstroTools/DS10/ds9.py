@@ -4,7 +4,8 @@ try:
 except NameError:
     pass
 from   pyds9 import DS9
-import pyfits
+#import pyfits
+import astropy.io.fits as pyfits
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -934,14 +935,14 @@ class ds10(DS9, Region):#<==
         if frame is not None:
             thisName = "{}[{}]".format(name, frame)
             print("\t", thisName, " ", getDimStr(pyfits.open(name)[frame].header))
-            self.set("fits {}".format(os.path.abspath(thisName)))
+            self.set("fits \"{}\"".format(os.path.abspath(thisName)))
         else:
             self._data = pyfits.open(name)
             N = len(self._data)
             for i in range(N):
                 thisName = "{}[{}]".format(name, i)
                 print("\t", thisName, "", getDimStr(pyfits.open(name)[i].header))
-                self.set("fits {}".format(thisName))
+                self.set("fits \"{}\"".format(thisName))
         return startNumber
     @property
     def newFrame(self):
