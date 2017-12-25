@@ -7,7 +7,7 @@ Fmajor's tools for astronomy data reduction.
     * You can quickly overview the structure of a fits (like [fv](https://heasarc.gsfc.nasa.gov/ftools/fv/), but in terminal)
     * You can filter fits by their header (e.g. only select fits with exptime>100)
     
-* [ds10](doc/ds10.rst): A python wrapper of ds9 (use pyds9).    
+* [ds10](doc/ds10.rst): A python wrapper of [ds9](http://ds9.si.edu/site/Home.html) (use [pyds9](https://github.com/ericmandel/pyds9)).    
 
     * It can open 2D image, 1D array or binary table by a single command "ds10 \*.fits". It will open the image using ds9, open a 1D array using matplotlib (also with a PyQt control window) and open binary table using ipython interactive mode
     
