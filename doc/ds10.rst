@@ -1,7 +1,6 @@
 ds10
 ========
-A python wrapper of ds9 (using pyds9), it can open 2D, 1D or binary table by a single command "ds10 \*.fits".
-It will open a image using ds9, open a 1D array using matplotlib (also with a PyQt control window) and open binary table using ipython interactive mode.
+A python wrapper of ds9 (using pyds9).
 
 Dependences
 -----------
@@ -34,6 +33,7 @@ usage
         -f: set frames to use. Example: -f1,2,3 -f1~3,5~7
     
         -b: filter files to open using header information
+        --bool
         -B: filter extensions to open using header information
     
         --width: width for the ds9 window
