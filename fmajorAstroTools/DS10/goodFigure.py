@@ -14,21 +14,46 @@ import pdb
 def gaussian(x, A, mu, sigma, C):
     return A * np.exp(- (x-mu)**2/(2 * sigma**2)) + C
 
+#try:
+    #import PyQt4.QtCore as QtCore
+    #from PyQt4.QtGui import \
+            #(QWidget, QCheckBox, QApplication,
+             #QRadioButton, QHBoxLayout, QVBoxLayout,
+             #QTextEdit, QPushButton, QLabel, QGridLayout,
+             #QDialog,  QDialogButtonBox, QInputDialog,
+             #QSizePolicy)
+    #from PyQt4 import QtGui
+    #from PyQt4 import QtCore
+    #from PyQt4.QtCore import Qt
+    #haveQt = 1
+#except ImportError as e:
+    #print("have no PyQt4")
+    #haveQt = 0
+
 try:
-    import PyQt4.QtCore as QtCore
-    from PyQt4.QtGui import \
-            (QWidget, QCheckBox, QApplication,
-             QRadioButton, QHBoxLayout, QVBoxLayout,
-             QTextEdit, QPushButton, QLabel, QGridLayout,
-             QDialog,  QDialogButtonBox, QInputDialog,
-             QSizePolicy)
-    from PyQt4 import QtGui
-    from PyQt4 import QtCore
-    from PyQt4.QtCore import Qt
-    haveQt4 = 1
+    import PyQt5.QtWidgets as QtWidgets
+    from PyQt5.QtWidgets import QWidget
+    from PyQt5.QtWidgets import QCheckBox
+    from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtWidgets import QRadioButton
+    from PyQt5.QtWidgets import QHBoxLayout
+    from PyQt5.QtWidgets import QVBoxLayout
+    from PyQt5.QtWidgets import QTextEdit
+    from PyQt5.QtWidgets import QPushButton
+    from PyQt5.QtWidgets import QLabel
+    from PyQt5.QtWidgets import QGridLayout
+    from PyQt5.QtWidgets import QDialog
+    from PyQt5.QtWidgets import QDialogButtonBox
+    from PyQt5.QtWidgets import QInputDialog
+    from PyQt5.QtWidgets import QSizePolicy
+    from PyQt5 import QtGui
+    from PyQt5 import QtCore
+    from PyQt5.QtCore import Qt
+    haveQt = 1
 except ImportError as e:
-    print("have no PyQt4")
-    haveQt4 = 0
+    print(e)
+    print("have no PyQt")
+    haveQt = 0
 
 temp = plt.rcParams["keymap.back"].index("c")
 if temp>-1:
@@ -47,7 +72,7 @@ class GoodFigure(object):
         else:
             self.fig = fig
             self.ax = self.fig.get_axes()[0]
-            if haveQt4 and self.qt:
+            if haveQt and self.qt:
                 self.app = QApplication([])
                 self._controlWindow = PlotControl(self, app=self.app)
                 #self._mainWindow = PlotControlMainWindow(self, app=self.app)
@@ -291,7 +316,7 @@ class GoodFigure(object):
         if not self.dynamic._show and self.ion:
             plt.show()
         if self.app is None:
-            if haveQt4 and self.qt:
+            if haveQt and self.qt:
                 self.app = QApplication([])
                 self._controlWindow = PlotControl(self, app=self.app)
                 print('open control window')
@@ -318,7 +343,7 @@ class GoodFigure(object):
             self.ax.autoscale_view(True,True,True)
             self.fig.canvas.draw()
             thisDict = thisPlot
-            if haveQt4 and self.qt:
+            if haveQt and self.qt:
                 buttons = self.plots[name]['buttons']
                 buttons["focus"].toggle()
             #thisPlot = self.plots[name]["buttons"]["focus"].toggle()
@@ -395,7 +420,7 @@ class GoodFigure(object):
             thisDict["y"] = y
             thisDict["config"] = kwargs
             thisDict["scatterConfig"] = scatterConfig
-            if haveQt4 and self.qt:
+            if haveQt and self.qt:
                 buttons = self._controlWindow.addLine(name)
                 self.app.processEvents()
                 thisDict["buttons"] = buttons
@@ -896,10 +921,10 @@ def getDict(input):
     return result
 #==> some functions
 
-if haveQt4:
-    class PlotControlMainWindow(QtGui.QMainWindow):
+if haveQt:
+    class PlotControlMainWindow(QtWidgets.QMainWindow):
          def __init__(self, parent = None, app=None):
-             #QtGui.QMainWindow.__init__(self)
+             #QtWidgets.QMainWindow.__init__(self)
              super(PlotControlMainWindow, self).__init__()
              self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
              self.main_widget = PlotControl(parent=parent, app=app)
@@ -915,8 +940,8 @@ if haveQt4:
             self.bodys={}
             self.app = app
             self.limitConfigs={}
-            self._focusGroup = QtGui.QButtonGroup()
-            self._limitGroup = QtGui.QButtonGroup()
+            self._focusGroup = QtWidgets.QButtonGroup()
+            self._limitGroup = QtWidgets.QButtonGroup()
             self.parent = parent
 
             self.genLayout()
@@ -933,7 +958,7 @@ if haveQt4:
             self.setLayout(self.rootVbox)
 
             self.headerVbox.setContentsMargins(0,0,0,0)
-            self.headerVbox.setMargin(0)
+            #self.headerVbox.setMargin(0)
             self.headerVbox.setSpacing(0)
             self.headerWidget = QWidget()
             self.headerWidget.setLayout(self.headerVbox)
@@ -946,14 +971,14 @@ if haveQt4:
 
             self.lineVbox = QVBoxLayout()
             self.lineVbox.setContentsMargins(0,0,0,0)
-            self.lineVbox.setMargin(0)
+            #self.lineVbox.setMargin(0)
             self.lineVbox.setSpacing(0)
             self.lineVbox.setAlignment(Qt.AlignTop)
             self.lineWidget = QWidget()
             self.lineWidget.setLayout(self.lineVbox)
             self.lineWidget.setContentsMargins(0,0,0,0)
 
-            self.scroll = QtGui.QScrollArea()
+            self.scroll = QtWidgets.QScrollArea()
             #self.scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
             self.scroll.setWidgetResizable(True)
             self.scroll.setWidget(self.lineWidget)
@@ -981,8 +1006,8 @@ if haveQt4:
             vbox.addLayout(box); vbox.addLayout(box1);
             self.headerVbox.addLayout(vbox)
             # label and text field
-            lbl = QtGui.QLabel("start", self)
-            self._x_limit_start = QtGui.QLineEdit(self)
+            lbl = QtWidgets.QLabel("start", self)
+            self._x_limit_start = QtWidgets.QLineEdit(self)
             aux = self.limitConfigs.get("_x_limit_start","")
             if aux:
                 self._x_limit_start.setText(aux)
@@ -992,8 +1017,8 @@ if haveQt4:
             box.addWidget(self._x_limit_start)
             box.addStretch(1)
             # label and text field
-            lbl = QtGui.QLabel("end", self)
-            self._x_limit_end = QtGui.QLineEdit(self)
+            lbl = QtWidgets.QLabel("end", self)
+            self._x_limit_end = QtWidgets.QLineEdit(self)
             aux = self.limitConfigs.get("_x_limit_end","")
             if aux:
                 self._x_limit_end.setText(aux)
@@ -1003,11 +1028,11 @@ if haveQt4:
             box.addWidget(self._x_limit_end)
             box.addStretch(1)
             # U button
-            self._x_limit_button_update = QtGui.QPushButton("U", self)
+            self._x_limit_button_update = QtWidgets.QPushButton("U", self)
             self._x_limit_button_update.clicked.connect(self._x_limit_button_f)
             box1.addWidget(self._x_limit_button_update)
             # T button
-            self._x_limit_button_tight = QtGui.QPushButton("T", self)
+            self._x_limit_button_tight = QtWidgets.QPushButton("T", self)
             self._x_limit_button_tight.clicked.connect(self._x_limit_button_ft)
             box1.addWidget(self._x_limit_button_tight)
 
@@ -1031,7 +1056,7 @@ if haveQt4:
             vvbox2.addLayout(hbox_percentile)
             hhbox = QHBoxLayout()
             hhbox.setContentsMargins(0,0,0,0)
-            hhbox.setMargin(0)
+            #hhbox.setMargin(0)
             self._limitLaylout = hhbox
             vbox.addLayout(hhbox)
             rb = QRadioButton('Auto', self)
@@ -1085,7 +1110,7 @@ if haveQt4:
             hbox = QHBoxLayout()
             hbox.setSpacing(10)
             hbox.setContentsMargins(0,0,0,0)
-            hbox.setMargin(0)
+            #hbox.setMargin(0)
             hbox.allObjs = {}
             self.headerVbox.addLayout(hbox)
             hbox1 = QHBoxLayout()
@@ -1124,7 +1149,7 @@ if haveQt4:
         def addLine(self, name):
             hbox = QHBoxLayout()
             hbox.setContentsMargins(0,0,0,0)
-            hbox.setMargin(0)
+            #hbox.setMargin(0)
             hbox.setSpacing(10)
             self.lineVbox.addLayout(hbox)
             self.bodys[name] = hbox
@@ -1178,52 +1203,52 @@ if haveQt4:
             #!! plot value update
             hbox = QHBoxLayout()
             hbox.setContentsMargins(0,0,0,0)
-            hbox.setMargin(0)
+            #hbox.setMargin(0)
             hbox.setSpacing(10)
             self.footVbox.addLayout(hbox)
-            lbl = QtGui.QLabel("y", self)
-            self._plotValue = QtGui.QLineEdit(self)
+            lbl = QtWidgets.QLabel("y", self)
+            self._plotValue = QtWidgets.QLineEdit(self)
             self._plotValue.setText("")
-            self._plotValue.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                          QtGui.QSizePolicy.Fixed)
+            self._plotValue.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                          QtWidgets.QSizePolicy.Fixed)
             hbox.addWidget(lbl)
             hbox.addWidget(self._plotValue)
             # U button
-            self._plotValue_update = QtGui.QPushButton("U", self)
+            self._plotValue_update = QtWidgets.QPushButton("U", self)
             self._plotValue_update.clicked.connect(self._plotValue_button_f)
             hbox.addWidget(self._plotValue_update)
             #!! plot style update
             hbox = QHBoxLayout()
             hbox.setContentsMargins(0,0,0,0)
-            hbox.setMargin(0)
+            #hbox.setMargin(0)
             hbox.setSpacing(10)
             self.footVbox.addLayout(hbox)
-            lbl = QtGui.QLabel("style", self)
-            self._plotStyle = QtGui.QLineEdit(self)
+            lbl = QtWidgets.QLabel("style", self)
+            self._plotStyle = QtWidgets.QLineEdit(self)
             self._plotStyle.setText("")
-            self._plotStyle.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                          QtGui.QSizePolicy.Fixed)
+            self._plotStyle.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                          QtWidgets.QSizePolicy.Fixed)
             hbox.addWidget(lbl)
             hbox.addWidget(self._plotStyle)
             # U button
-            self._plotStyle_update = QtGui.QPushButton("U", self)
+            self._plotStyle_update = QtWidgets.QPushButton("U", self)
             self._plotStyle_update.clicked.connect(self._plotStyle_button_f)
             hbox.addWidget(self._plotStyle_update)
             #!! scatter style update
             hbox = QHBoxLayout()
             hbox.setContentsMargins(0,0,0,0)
-            hbox.setMargin(0)
+            #hbox.setMargin(0)
             hbox.setSpacing(10)
             self.footVbox.addLayout(hbox)
-            lbl = QtGui.QLabel("scatter", self)
-            self._plotScatter = QtGui.QLineEdit(self)
+            lbl = QtWidgets.QLabel("scatter", self)
+            self._plotScatter = QtWidgets.QLineEdit(self)
             self._plotScatter.setText("")
-            self._plotScatter.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                          QtGui.QSizePolicy.Fixed)
+            self._plotScatter.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                          QtWidgets.QSizePolicy.Fixed)
             hbox.addWidget(lbl)
             hbox.addWidget(self._plotScatter)
             # U button
-            self._plotScatter_update = QtGui.QPushButton("U", self)
+            self._plotScatter_update = QtWidgets.QPushButton("U", self)
             self._plotScatter_update.clicked.connect(self._plotScatter_button_f)
             hbox.addWidget(self._plotScatter_update)
 
@@ -1285,7 +1310,7 @@ if haveQt4:
             hhbox.addWidget(cb)
             Vbox.allObjs["innerData"] = cb
             # slide
-            sld = QtGui.QSlider(QtCore.Qt.Horizontal, self)
+            sld = QtWidgets.QSlider(QtCore.Qt.Horizontal, self)
             sld.valueChanged.connect(self.slide(name))
             sld.setMinimum(0)
             sld.setMaximum(maxValue)
@@ -1304,15 +1329,15 @@ if haveQt4:
             hhbox.addWidget(pb)
             Vbox.allObjs["update"] = pb
 
-            lbx1 = QtGui.QLabel("x", self)
-            x1 = QtGui.QLineEdit(self)
-            lby1 = QtGui.QLabel("y", self)
-            y1 = QtGui.QLineEdit(self)
+            lbx1 = QtWidgets.QLabel("x", self)
+            x1 = QtWidgets.QLineEdit(self)
+            lby1 = QtWidgets.QLabel("y", self)
+            y1 = QtWidgets.QLineEdit(self)
             pb1 = QPushButton('U', self)
-            lbx2 = QtGui.QLabel("x", self)
-            x2 = QtGui.QLineEdit(self)
-            lby2 = QtGui.QLabel("y", self)
-            y2 = QtGui.QLineEdit(self)
+            lbx2 = QtWidgets.QLabel("x", self)
+            x2 = QtWidgets.QLineEdit(self)
+            lby2 = QtWidgets.QLabel("y", self)
+            y2 = QtWidgets.QLineEdit(self)
             pb2 = QPushButton('U', self)
             Vbox.allObjs["updatePoint1"] = pb
             Vbox.allObjs["updatePoint2"] = pb
@@ -1349,8 +1374,8 @@ if haveQt4:
                             if self.parent is not None:
                                 self.parent._setLimitType("auto", None)
                         elif self._limitType == "updown":
-                            lbl = QtGui.QLabel("down", self)
-                            self._limit_down = QtGui.QLineEdit(self)
+                            lbl = QtWidgets.QLabel("down", self)
+                            self._limit_down = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_limit_down","")
                             if aux:
                                 self._limit_down.setText(aux)
@@ -1359,8 +1384,8 @@ if haveQt4:
                             box.addWidget(lbl)
                             box.addWidget(self._limit_down)
                             box.addStretch(1)
-                            lbl = QtGui.QLabel("up", self)
-                            self._limit_up = QtGui.QLineEdit(self)
+                            lbl = QtWidgets.QLabel("up", self)
+                            self._limit_up = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_limit_up","")
                             if aux:
                                 self._limit_up.setText(aux)
@@ -1369,7 +1394,7 @@ if haveQt4:
                             box.addWidget(lbl)
                             box.addWidget(self._limit_up)
                             box.addStretch(1)
-                            self._limit_button_update = QtGui.QPushButton("U", self)
+                            self._limit_button_update = QtWidgets.QPushButton("U", self)
                             self._limit_button_update.clicked.connect(self._limit_button_f)
                             box.addWidget(self._limit_button_update)
                         elif self._limitType == "updownRej":
@@ -1381,8 +1406,8 @@ if haveQt4:
                             vbox.addLayout(hbox1)
                             vbox.addLayout(hbox2)
                             vbox.addLayout(hbox3)
-                            lbl = QtGui.QLabel("down", self)
-                            self._limit_reject_down = QtGui.QLineEdit(self)
+                            lbl = QtWidgets.QLabel("down", self)
+                            self._limit_reject_down = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_limit_reject_down","")
                             if aux:
                                 self._limit_reject_down.setText(aux)
@@ -1391,8 +1416,8 @@ if haveQt4:
                             hbox1.addWidget(lbl)
                             hbox1.addWidget(self._limit_reject_down)
                             hbox1.addStretch(1)
-                            lbl = QtGui.QLabel("up", self)
-                            self._limit_reject_up = QtGui.QLineEdit(self)
+                            lbl = QtWidgets.QLabel("up", self)
+                            self._limit_reject_up = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_limit_reject_up","")
                             if aux:
                                 self._limit_reject_up.setText(aux)
@@ -1401,14 +1426,14 @@ if haveQt4:
                             hbox1.addWidget(lbl)
                             hbox1.addWidget(self._limit_reject_up)
                             hbox1.addStretch(1)
-                            self._reject_limit_button_update = QtGui.QPushButton("U", self)
+                            self._reject_limit_button_update = QtWidgets.QPushButton("U", self)
                             self._reject_limit_button_update.clicked.connect(self._reject_limit_button_f)
                             #qle.textChanged[str].connect(self.onChanged)
                             hbox3.addWidget(self._reject_limit_button_update)
 
-                            lbl1 = QtGui.QLabel("margins", self)
-                            lbl2 = QtGui.QLabel("d", self)
-                            self._limit_reject_down_margin = QtGui.QLineEdit(self)
+                            lbl1 = QtWidgets.QLabel("margins", self)
+                            lbl2 = QtWidgets.QLabel("d", self)
+                            self._limit_reject_down_margin = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_limit_reject_down_margin","")
                             if aux:
                                 self._limit_reject_down_margin.setText(aux)
@@ -1418,8 +1443,8 @@ if haveQt4:
                             hbox2.addWidget(lbl2)
                             hbox2.addWidget(self._limit_reject_down_margin)
                             hbox2.addStretch(1)
-                            lbl = QtGui.QLabel("u", self)
-                            self._limit_reject_up_margin = QtGui.QLineEdit(self)
+                            lbl = QtWidgets.QLabel("u", self)
+                            self._limit_reject_up_margin = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_limit_reject_up_margin","")
                             if aux:
                                 self._limit_reject_up_margin.setText(aux)
@@ -1437,8 +1462,8 @@ if haveQt4:
                             vbox.addLayout(hbox1)
                             vbox.addLayout(hbox2)
                             vbox.addLayout(hbox3)
-                            hbox1.addWidget(QtGui.QLabel("( P(",self))
-                            self._up_1 = QtGui.QLineEdit(self)
+                            hbox1.addWidget(QtWidgets.QLabel("( P(",self))
+                            self._up_1 = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_up_1","")
                             if aux:
                                 self._up_1.setText(aux)
@@ -1446,8 +1471,8 @@ if haveQt4:
                                 self._up_1.setText("100")
                                 self.limitConfigs["_up_1"] = "100"
                             hbox1.addWidget(self._up_1)
-                            hbox1.addWidget(QtGui.QLabel(")+",self))
-                            self._up_2 = QtGui.QLineEdit(self)
+                            hbox1.addWidget(QtWidgets.QLabel(")+",self))
+                            self._up_2 = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_up_2","")
                             if aux:
                                 self._up_2.setText(aux)
@@ -1455,8 +1480,8 @@ if haveQt4:
                                 self._up_2.setText("0")
                                 self.limitConfigs["_up_2"] = "0"
                             hbox1.addWidget(self._up_2)
-                            hbox1.addWidget(QtGui.QLabel(")x",self))
-                            self._up_3 = QtGui.QLineEdit(self)
+                            hbox1.addWidget(QtWidgets.QLabel(")x",self))
+                            self._up_3 = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_up_3","")
                             if aux:
                                 self._up_3.setText(aux)
@@ -1464,8 +1489,8 @@ if haveQt4:
                                 self._up_3.setText("1")
                                 self.limitConfigs["_up_3"] = "0"
                             hbox1.addWidget(self._up_3)
-                            hbox1.addWidget(QtGui.QLabel("+",self))
-                            self._up_4 = QtGui.QLineEdit(self)
+                            hbox1.addWidget(QtWidgets.QLabel("+",self))
+                            self._up_4 = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_up_4","")
                             if aux:
                                 self._up_4.setText(aux)
@@ -1474,8 +1499,8 @@ if haveQt4:
                                 self.limitConfigs["_up_4"] = "0"
                             hbox1.addWidget(self._up_4)
 
-                            hbox2.addWidget(QtGui.QLabel("( P(",self))
-                            self._down_1 = QtGui.QLineEdit(self)
+                            hbox2.addWidget(QtWidgets.QLabel("( P(",self))
+                            self._down_1 = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_down_1","")
                             if aux:
                                 self._down_1.setText(aux)
@@ -1483,8 +1508,8 @@ if haveQt4:
                                 self._down_1.setText("0")
                                 self.limitConfigs["_down_1"] = "0"
                             hbox2.addWidget(self._down_1)
-                            hbox2.addWidget(QtGui.QLabel(")+",self))
-                            self._down_2 = QtGui.QLineEdit(self)
+                            hbox2.addWidget(QtWidgets.QLabel(")+",self))
+                            self._down_2 = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_down_2","")
                             if aux:
                                 self._down_2.setText(aux)
@@ -1492,8 +1517,8 @@ if haveQt4:
                                 self._down_2.setText("0")
                                 self.limitConfigs["_down_2"] = "0"
                             hbox2.addWidget(self._down_2)
-                            hbox2.addWidget(QtGui.QLabel(")x",self))
-                            self._down_3 = QtGui.QLineEdit(self)
+                            hbox2.addWidget(QtWidgets.QLabel(")x",self))
+                            self._down_3 = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_down_3","")
                             if aux:
                                 self._down_3.setText(aux)
@@ -1501,8 +1526,8 @@ if haveQt4:
                                 self._down_3.setText("1")
                                 self.limitConfigs["_down_3"] = "0"
                             hbox2.addWidget(self._down_3)
-                            hbox2.addWidget(QtGui.QLabel("+",self))
-                            self._down_4 = QtGui.QLineEdit(self)
+                            hbox2.addWidget(QtWidgets.QLabel("+",self))
+                            self._down_4 = QtWidgets.QLineEdit(self)
                             aux = self.limitConfigs.get("_down_4","")
                             if aux:
                                 self._down_4.setText(aux)
@@ -1510,7 +1535,7 @@ if haveQt4:
                                 self._down_4.setText("0")
                                 self.limitConfigs["_down_4"] = "0"
                             hbox2.addWidget(self._down_4)
-                            self._percentile_button_update = QtGui.QPushButton("U", self)
+                            self._percentile_button_update = QtWidgets.QPushButton("U", self)
                             self._percentile_button_update.clicked.connect(self._percentile_button_f)
                             hbox3.addWidget(self._percentile_button_update)
                     self.app.processEvents()
@@ -1593,7 +1618,7 @@ if haveQt4:
                         widget.setChecked(False)
         def removeAllLine(self):
             ok = SimpleDialog.ok("Do you want to delete all the plots?")
-            #text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog', 'Enter your name:')
+            #text, ok = QtWidgets.QInputDialog.getText(self, 'Input Dialog', 'Enter your name:')
             if ok:
                 for eachKey in list(self.bodys.keys()):
                     print("remove:", eachKey)
@@ -1822,6 +1847,6 @@ if haveQt4:
             return QDialog.Accepted == result
 
 if __name__ == '__main__':
-    if haveQt4:
+    if haveQt:
         app = QApplication(sys.argv)
         ex = PlotControl(app=app)
