@@ -31,7 +31,7 @@ Dependences
 * python3
 * pyqt: you should install it from github by
 
-    ``pip install [--user] git+https://github.com/ericmandel/pyds9.git#egg=pyds9``
+    ``pip3 install git+https://github.com/ericmandel/pyds9.git#egg=pyds9 --upgrade``
 * ds9: make sure you can open ds9 from your terminal.
 * pyqt4 (optional): you will have a contral panel when open 1D array if you install ``pyqt4``.
 
