@@ -16,7 +16,7 @@ from fmajorAstroTools.DS10 import ds9
 from fmajorAstroTools.utils import imheader
 p = plt
 
-usageStr="""ds10 filenames_group0 [options] [filenames_group1 [options]]
+usageStr="""ds10 filenames_group0 [options] [filenames_group1 [options]] ...
     -n: norm the plot
     -i: initial plot(not use wcs)
     -e: do expression before plot. Example: -e"{}/1000"

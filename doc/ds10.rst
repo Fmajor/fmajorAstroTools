@@ -20,7 +20,7 @@ usage
 -----
 ::
 
-    ds10 filenames_group0 [options] [filenames_group1 [options]]
+    ds10 filenames_group0 [options] [filenames_group1 [options]] ...
         -n: norm the plot
         -i: initial plot(not use wcs)
         -e: do expression before plot. Example: -e"{}/1000"
@@ -52,6 +52,15 @@ usage
 
 demos
 ----
+
+you can run this demo by yourself::
+
+    cd demo/fits
+    bash ds10.doc.sh
+
+A video of this Demo is here
+.. _Demo: https://www.bilibili.com/video/av17614118
+
 In these demos, command after \$ is the bash input, the remaining is the output. we use the (...) to omit some long outputs.
 
 You can generate the demo result and test ds10 by yourself::
