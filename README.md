@@ -1,9 +1,6 @@
 fmajorAstroUtils
 ======================
 
-Developing and debuging now, please wait until this Line disappear
---------------------------------------------------
-
 Fmajor's tools for astronomy data reduction.
 
 * [imheader](doc/imheader.rst): A command line tool to check the headers or do filtering for fits file using header information.
