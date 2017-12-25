@@ -29,20 +29,12 @@ You will like these tools if you have numerious fits image to check.
 Dependences
 -----------
 * python3
-* pyqt: you should install it from github by
+* pyds9: if the ds10 tell you that it can to load fits due to XPA error, maybe you should install the latest version of pyds9 from github, like
 
     ``pip3 install git+https://github.com/ericmandel/pyds9.git#egg=pyds9 --upgrade``
 * ds9: make sure you can open ds9 from your terminal.
-* pyqt4 (optional): you will have a contral panel when open 1D array if you install ``pyqt4``.
+* pyqt (optional): you will have a contral panel when open 1D array if you install ``pyqt``. You should install ``qt`` first.
 
-In macOS, you can install it by
-```
-    brew install sip
-    brew tap cartr/qt4
-    brew tap-pin cartr/qt4
-    brew install qt@4
-    brew install cartr/qt4/pyqt@4 --with-python3
-```
 
 Install
 -------

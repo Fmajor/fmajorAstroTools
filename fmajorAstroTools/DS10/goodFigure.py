@@ -14,22 +14,6 @@ import pdb
 def gaussian(x, A, mu, sigma, C):
     return A * np.exp(- (x-mu)**2/(2 * sigma**2)) + C
 
-#try:
-    #import PyQt4.QtCore as QtCore
-    #from PyQt4.QtGui import \
-            #(QWidget, QCheckBox, QApplication,
-             #QRadioButton, QHBoxLayout, QVBoxLayout,
-             #QTextEdit, QPushButton, QLabel, QGridLayout,
-             #QDialog,  QDialogButtonBox, QInputDialog,
-             #QSizePolicy)
-    #from PyQt4 import QtGui
-    #from PyQt4 import QtCore
-    #from PyQt4.QtCore import Qt
-    #haveQt = 1
-#except ImportError as e:
-    #print("have no PyQt4")
-    #haveQt = 0
-
 try:
     import PyQt5.QtWidgets as QtWidgets
     from PyQt5.QtWidgets import QWidget
