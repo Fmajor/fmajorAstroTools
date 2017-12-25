@@ -16,7 +16,7 @@ usageStr="""imheader filename [options]
         -s: use short print
             if use short print, must also set the keys using -k
         -a: use all frame
-        -f num: use frame num in each file, Examples -f1,2,3 -f1~3,5~9
+        -f num: use frame num in each file, Examples -f1,2,3 -f1~3,5~9 -f1:10:2
         -b boolExp: filtering the files using bool expression
            examples:    ({EXPTIME}>10(and){OBJTYPE}='object')(or)({RA}>100(and){DEC}<10)
                         ('acq'(notin){OBJECT})

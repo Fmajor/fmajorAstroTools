@@ -26,7 +26,7 @@ usageStr="""ds10 filenames_group0 [options] [filenames_group1 [options]] ...
         Example: ds10 1.fits 2.fits -f1,2
             show 1.fits[1] 2.fits[1] 1.fits[2] 2.fits[2]
                 instead of 1.fits[1,2] 2.fits[1,2]
-    -f: set frames to use. Example: -f1,2,3 -f1~3,5~7
+    -f: set frames to use. Example: -f1,2,3 -f1~3,5~7 -f1:10:2
 
     -b: filter files to open using header information
     --boolFrames: specify which frame to be use for bool filter (default is all frames)

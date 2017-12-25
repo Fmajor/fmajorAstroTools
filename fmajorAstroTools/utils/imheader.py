@@ -190,6 +190,18 @@ def main(args, configs={}): #<==
             if len(_) != 2:
                 raise ValueError('error format in "-f" argument: {}'.format(frames))
             auxFrames.extend(list(range(int(_[0]), int(_[1])+1)))
+        elif ':' in each:
+            _ = each.split(':')
+            try:
+                if len(_)==2:
+                    __ = list(range(int(_[0]), int(_[1])))
+                elif len(_)==3:
+                    __ = list(range(int(_[0]), int(_[1]), int(_[2])))
+                else:
+                    raise ValueError()
+            except ValueError:
+                raise ValueError("if you use ':' in -f, it should be like 1:10 or 1:10:2, slices like 1::2 is not allown")
+            auxFrames.extend(__)
         else:
             auxFrames.append(int(each))
     print(auxFrames)
