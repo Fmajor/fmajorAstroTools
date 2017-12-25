@@ -27,7 +27,7 @@ usageStr="""imheader filename [options]
         --onlyKeys: only list the keywords in some header alphybetically
         --onlyFile: only print filename
         --onlyFileExt: print filename.fits[ext]
-        --boolFrames: specify which frame to be use for bool filter
+        --boolFrames: specify which frame to be use for bool filter (default is all frames)
         --diff: output and give command to vimdiff two pairs of headers
         --output: output the header to *.fits.header
         --withoutExt: not show ext num in the short print mode

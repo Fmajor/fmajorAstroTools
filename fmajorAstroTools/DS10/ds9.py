@@ -3,11 +3,7 @@ try:
     input = raw_input
 except NameError:
     pass
-#from   pyds9 import DS9
-try:
-    from .pyds9 import DS9
-except:
-    from .pyds9 import DS9
+from   pyds9 import DS9
 import pyfits
 import numpy as np
 import matplotlib
