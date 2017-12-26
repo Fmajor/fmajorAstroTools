@@ -207,6 +207,26 @@ class GoodFigure(object):
                 thisEnd = np.nan
             print("start: {}, end: {}".format(thisStart, thisEnd))
             self.fig.canvas.draw()
+        elif name == "ylimitTight":
+            ymin = []
+            ymax = []
+            for eachKey in self.plots:
+                thisy = self.plots[eachKey].get("y", None)
+                if thisy is not None:
+                    ymin.append(np.nanmin(thisy))
+                    ymax.append(np.nanmax(thisy))
+            if len(ymin):
+                thisStart = np.min(ymin)
+                self.ax.set_ylim(bottom=thisStart)
+            else:
+                thisStart = np.nan
+            if len(ymax):
+                thisEnd = np.max(ymax)
+                self.ax.set_ylim(top=thisEnd)
+            else:
+                thisEnd = np.nan
+            print("start: {}, end: {}".format(thisStart, thisEnd))
+            self.fig.canvas.draw()
 
     def _setPlotStyle(self, config):
         if not self._activeNumber:
@@ -1014,11 +1034,15 @@ if haveQt:
             # U button
             self._x_limit_button_update = QtWidgets.QPushButton("U", self)
             self._x_limit_button_update.clicked.connect(self._x_limit_button_f)
-            box1.addWidget(self._x_limit_button_update)
+            box.addWidget(self._x_limit_button_update)
             # T button
-            self._x_limit_button_tight = QtWidgets.QPushButton("T", self)
+            self._x_limit_button_tight = QtWidgets.QPushButton("XT", self)
             self._x_limit_button_tight.clicked.connect(self._x_limit_button_ft)
             box1.addWidget(self._x_limit_button_tight)
+            # T button
+            self._y_limit_button_tight = QtWidgets.QPushButton("YT", self)
+            self._y_limit_button_tight.clicked.connect(self._y_limit_button_ft)
+            box1.addWidget(self._y_limit_button_tight)
 
             # ylimit control
             vbox = QVBoxLayout()
@@ -1064,6 +1088,7 @@ if haveQt:
             rb.toggled.connect(self.limits("percentile"))
             self._limitGroup.addButton(rb)
             hbox_percentile.addWidget(rb)
+
         def header(self):
             hbox = QHBoxLayout()
             hbox.setContentsMargins(0,5,0,0)
@@ -1629,6 +1654,9 @@ if haveQt:
         def _x_limit_button_ft(self):
             if self.parent is not None:
                 self.parent._setLimitType("xlimitTight", None)
+        def _y_limit_button_ft(self):
+            if self.parent is not None:
+                self.parent._setLimitType("ylimitTight", None)
         def _limit_button_f(self):
             up =   self._limit_up.text()
             down = self._limit_down.text()
