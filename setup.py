@@ -9,7 +9,7 @@ import sys
 
 # setups
 name="fmajorAstroTools"
-version="0.0"
+version="0.0.1"
 packages = ["fmajorAstroTools"]
 install_requires=['ipython', 'matplotlib', 'numpy', 'astropy', "colorama", "ipdb", "scipy", "pyds9", "pyqt5"]
 author='Jin Wu'
