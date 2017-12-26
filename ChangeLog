@@ -1,0 +1,9 @@
+ver. 0.0.1 (2017/12/26)
+-----------------------
+- migrate from pyqt4 to pyqt5
+- change layout of 1D plot control panel, add "tight y" button
+- manage this repository by gg
+
+ver. 0.0.0 (2017/12/25)
+-----------------------
+- Initial release
