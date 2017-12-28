@@ -37,7 +37,7 @@ usageStr="""ds10 filenames_group0 [options] [filenames_group1 [options]] ...
     --regions: open region file
     --selfRegions: open region file with the same name
     --exec: exec commands after load all image
-    --execFile: exec commands from file after load all image
+    --execFile: exec commands from file after load all image, default is ~/.ds10.exec.py
     --exit: not stay in python interactive mode
     --notOpen: not open 2D image and 1D array, just print filter result
 
@@ -82,7 +82,7 @@ usageStrFull="""ds10 filenames_group0 [options] [filenames_group1 [options]]
     --hc: concatenate horizontally
 """
 
-config_file = os.path.expanduser('~/.ds10.conf')
+config_file = os.path.expanduser('~/.ds10.exec.py')
 
 # TODO: falter
 
