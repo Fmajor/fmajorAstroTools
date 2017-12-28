@@ -454,6 +454,7 @@ hb=""" in the following command list, "A==>B==>C" means this command is equivale
     d.crop:   getter&setter: (cropCenter_x, cropCenter_y, cropSize_x, cropSize_y)
     d.cropnon:getter: set no crop
     d.cropbox:getter&setter: (bottomLeft_x, bottomLeft, upperRight_x, upperRight_y)
+    d.wcs_format: getter&setter: wcs format, can be degrees or sexagesimal
     d.width:  getter&setter: ds9 window width
     d.height: getter&setter: ds9 window height
     d.window: getter&setter: (width, height)
@@ -881,6 +882,16 @@ class ds10(DS9, Region):#<==
                 print(e)
         raise Exception("invaild value or data type for {}: {}, type {}".\
                     format(sys._getframe().f_code.co_name, value, type(value)))
+    @property
+    def wcs_format(self):
+        return self.get('wcs format')
+    @wcs_format.setter
+    def wcs_format(self, value):
+        if value not in ['degrees', 'sexagesimal']:
+            raise ValueError('wcs format can only be degrees or sexagesimal')
+        else:
+            self.set('wcs format {}'.format(value))
+
     #==> set and get
     #<== only set
     @property
