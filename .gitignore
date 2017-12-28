@@ -11,3 +11,5 @@ build/
 .DS_Store
 .idea
 *so.dSYM
+fmajorAstroTools/math/lib/makeheaders
+fmajorAstroTools/math/src/astroMath.o
