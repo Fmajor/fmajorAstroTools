@@ -38,5 +38,5 @@ Install
 ```
 git clone https://github.com/Fmajor/fmajorAstroTools.git
 cd fmajorAstroTools
-python3 setup.py install
+make
 ```
