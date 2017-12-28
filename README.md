@@ -30,7 +30,7 @@ Dependences
 
     ``pip3 install git+https://github.com/ericmandel/pyds9.git#egg=pyds9 --upgrade``
 * ds9: make sure you can open ds9 from your terminal.
-* pyqt: you will have a contral panel when open 1D array if you install ``pyqt5``.
+* pyqt: you will have a contral panel when open 1D array if you install ``pyqt5``. If the install script fail to install ``pyqt5``, you should install it by yourself.
 
 
 Install
