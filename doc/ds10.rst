@@ -19,7 +19,7 @@ usage
         -f: set frames to use. Example: -f1,2,3 -f1~3,5~7
     
         -b: filter files to open using header information
-        --bool
+        --boolFrames: specify which frame to be use for bool filter (default is all frames)
         -B: filter extensions to open using header information
     
         --width: width for the ds9 window
