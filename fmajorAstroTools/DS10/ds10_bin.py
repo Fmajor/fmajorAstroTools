@@ -6,7 +6,6 @@ import getopt
 import copy
 import re
 import numpy as np
-import ipdb
 import pickle
 #import pyfits
 from astropy.io import fits as pyfits
@@ -95,7 +94,6 @@ def wcs2xy(data, header, ydata, rotateWCS="False"):
     print(wcs)
     pixel_x = np.arange(data.size)
     pixel_y = np.zeros((data.size,))
-    #ipdb.set_trace()
     if wcs.naxis==2:
         axisToUse = 1
         mask = (wcs.wcs.crval==1.0)|(np.abs(np.diag(wcs.wcs.cd))==1.0)
