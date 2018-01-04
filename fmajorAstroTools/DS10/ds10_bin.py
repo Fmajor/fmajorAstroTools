@@ -552,8 +552,8 @@ def main(argv):
         execFile = config_file
 
     if os.path.exists(execFile):
-        print('load commands from {}'.format(config_file))
-        with open(config_file) as f:
+        print('load commands from {}'.format(execFile))
+        with open(execFile) as f:
             for i, eachline in enumerate(f):
                 if eachline:
                     try:
