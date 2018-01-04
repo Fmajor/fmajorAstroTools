@@ -19,14 +19,15 @@ usage
         -f: set frames to use. Example: -f1,2,3 -f1~3,5~7
     
         -b: filter files to open using header information
-        --bool
+        --boolFrames: specify which frame to be use for bool filter (default is all frames)
         -B: filter extensions to open using header information
     
         --width: width for the ds9 window
         --height: width for the ds9 window
         --regions: open region file
         --selfRegions: open region file with the same name
-        --exec: make exec after plot
+        --exec: exec commands after load all image
+        --execFile: exec commands from file after load all image, default is ~/.ds10.exec.py
         --exit: not stay in python interactive mode
         --notOpen: not open 2D image and 1D array, just print filter result
     
