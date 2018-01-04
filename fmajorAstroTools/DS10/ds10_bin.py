@@ -6,7 +6,6 @@ import getopt
 import copy
 import re
 import numpy as np
-import ipdb
 import pickle
 #import pyfits
 from astropy.io import fits as pyfits
@@ -36,7 +35,8 @@ usageStr="""ds10 filenames_group0 [options] [filenames_group1 [options]] ...
     --height: width for the ds9 window
     --regions: open region file
     --selfRegions: open region file with the same name
-    --exec: make exec after plot
+    --exec: exec commands after load all image
+    --execFile: exec commands from file after load all image, default is ~/.ds10.exec.py
     --exit: not stay in python interactive mode
     --notOpen: not open 2D image and 1D array, just print filter result
 
@@ -66,7 +66,8 @@ usageStrFull="""ds10 filenames_group0 [options] [filenames_group1 [options]]
     --height: width for the ds9 window
     --regions: open region file
     --selfRegions: open region file with the same name
-    --exec: make exec after plot
+    --exec: exec commands after load all image
+    --execFile: exec commands from file after load all image
     --exit: not stay in python interactive mode
     --notOpen: not open 2D image and 1D array, just print filter result
     --: no options for args before
@@ -80,6 +81,7 @@ usageStrFull="""ds10 filenames_group0 [options] [filenames_group1 [options]]
     --hc: concatenate horizontally
 """
 
+config_file = os.path.expanduser('~/.ds10.exec.py')
 
 # TODO: falter
 
@@ -92,7 +94,6 @@ def wcs2xy(data, header, ydata, rotateWCS="False"):
     print(wcs)
     pixel_x = np.arange(data.size)
     pixel_y = np.zeros((data.size,))
-    #ipdb.set_trace()
     if wcs.naxis==2:
         axisToUse = 1
         mask = (wcs.wcs.crval==1.0)|(np.abs(np.diag(wcs.wcs.cd))==1.0)
@@ -264,7 +265,7 @@ def main(argv):
     print(argv)
     fileArgOpts = orderedArgvParser(argv, "af:re:niB:b:p:",
             ["boolFrames=", "xlim=", "ylim=", "force1d", "exit", "notOpen",
-             "vc", "hc", "name=", "exec=", "savefig=", "notShow",
+             "vc", "hc", "name=", "exec=", "savefig=", "notShow", "execFile=",
              "alter", "width=", "height=", "regions=", "selfRegions"])
 
     ds9Name="ds10"
@@ -273,6 +274,7 @@ def main(argv):
     file_ext_confs = []
     fileExt_names = []
     execStr = []
+    execFile = None
     savefig = ""
     notShow = False
     for eachOpts, eachFiles in fileArgOpts:
@@ -349,6 +351,8 @@ def main(argv):
                 ds9Name = value
             elif op=="--exec":
                 execStr = value
+            elif op=="--execFile":
+                execFile = value
             elif op=="--regions":
                 eachConfig["regions"] = value
             elif op=="--selfRegions":
@@ -535,6 +539,28 @@ def main(argv):
                 d.set_pyfits(pyfits.HDUList([thisObj]))
             d.nan="red"
             print("\tconcatenate {}".format(", ".join(conFrame)) )
+
+    if d is None:
+        if notShow:
+            d = ds9.ds10(ds9Name, figShow=False, width=width, height=height, ds9Show=False, qt=False)
+        else:
+            d = ds9.ds10(ds9Name, figShow=False, width=width, height=height)
+        d.t=[]
+        d.tn=[]
+
+    if not execFile:
+        execFile = config_file
+
+    if os.path.exists(execFile):
+        print('load commands from {}'.format(config_file))
+        with open(config_file) as f:
+            for i, eachline in enumerate(f):
+                if eachline:
+                    try:
+                        exec(eachline, globals(), locals())
+                    except Exception as e:
+                        print(e)
+                        print('error in line {} file {}'.format(i+1, config_file))
 
     if execStr:
         print("exec({})".format(execStr))
