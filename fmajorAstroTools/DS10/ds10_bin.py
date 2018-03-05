@@ -398,6 +398,9 @@ def main(argv):
     if savefig: notShow = True
     if notShow:
         plt.switch_backend("Agg")
+
+
+
     for i, (eachGroupFile, eachGroupFrames, eachConfig) in enumerate(file_ext_confs):
         eachExp = eachConfig.get("expStr")
         eachPlotConfig = eachConfig.get("plotConfig")
@@ -548,23 +551,6 @@ def main(argv):
         d.t=[]
         d.tn=[]
 
-    if not execFile:
-        execFile = config_file
-
-    if os.path.exists(execFile):
-        print('load commands from {}'.format(execFile))
-        with open(execFile) as f:
-            for i, eachline in enumerate(f):
-                if eachline:
-                    try:
-                        exec(eachline, globals(), locals())
-                    except Exception as e:
-                        print(e)
-                        print('error in line {} file {}'.format(i+1, config_file))
-
-    if execStr:
-        print("exec({})".format(execStr))
-        exec(execStr, globals(), locals())
 
     if plot1d:# set xlim and ylim
         if xlim is not None:
@@ -576,7 +562,19 @@ def main(argv):
             with open(savefig, "wb") as f:
                 pickle.dump(d.goodfigure.fig, f)
 
-    return d
+    return d, execFile, execStr
 
 if __name__=="__main__":
-    d=main(sys.argv)
+    d, execFile, execStr = main(sys.argv)
+    if not execFile:
+        execFile = config_file
+
+    if os.path.exists(execFile):
+        print('load commands from {}'.format(execFile))
+        with open(execFile) as f:
+            content = f.read()
+            exec(content, globals(), locals())
+
+    if execStr:
+        print("exec({})".format(execStr))
+        exec(execStr, globals(), locals())

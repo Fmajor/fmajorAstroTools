@@ -1,62 +1,10 @@
-#!/usr/local/bin/ipython3
-# -*- coding: utf-8 -*-
+#!/bin/bash
+last="${@: -1}"
+scriptPath=$(python3 -c 'import fmajorAstroTools as f;import os.path as p;print(p.join(p.dirname(p.abspath(f.__file__)), "DS10/loadPyFigs.py"))')
+if [[ ${last} == "--gui" ]]; then
+    PY="ipython3 -i"
+else
+    PY="ipython3 "
+fi
 
-import sys
-import os
-import pickle
-import matplotlib.pyplot as plt
-import matplotlib
-import numpy as np
-from fmajorAstroTools.DS10.goodFigure import PlotDynamic
-from fmajorAstroTools.DS10.goodFigure import GoodFigure
-import ipdb
-import getopt
-
-def loadFile(filename):
-    with open(filename, 'rb') as f:
-        obj = pickle.load(f)
-        if type(obj)==list:
-            return obj
-        elif type(obj)==matplotlib.figure.Figure:
-            return [obj]
-        elif isinstance(obj, dict):
-            thisClass = obj.pop("class")
-            return [thisClass(**obj)]
-        else:
-            raise Exception("unknown data type of {}", type(obj))
-
-opts, args = getopt.gnu_getopt(sys.argv[1:], "",
-        ["debug", "gui", "class"])
-filenames = args
-
-debug = False
-gui = False
-for op, value in opts:
-    if op == "--debug":
-        debug = True
-    if op == "--gui":
-        gui = True
-
-if len(filenames)<1:
-    print("usage: loadPyFig filename1 filename2 ...")
-    sys.exit(1)
-
-for each in filenames:
-    if not os.path.exists(each):
-        print("invalid file name:{}".format(each))
-
-allObj = []
-for each in filenames:
-    allObj += loadFile(each)
-
-fig = plt.gcf()
-ax = plt.gca()
-#dynamic = PlotDynamic(ax, ion=False, show=False)
-if gui:
-    goodFigure = GoodFigure(fig=fig, ion=False, show=False)
-
-if debug:
-    plt.show(0)
-    ipdb.set_trace()
-else:
-    plt.show()
+${PY} --no-banner -- ${scriptPath} $@
