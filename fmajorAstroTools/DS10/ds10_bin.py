@@ -16,8 +16,8 @@ from fmajorAstroTools.utils import imheader
 p = plt
 
 usageStr="""ds10 filenames_group0 [options] [filenames_group1 [options]] ...
-    -n: norm the plot
-    -i: initial plot(not use wcs)
+    -n: (for 1D) norm the plot
+    -i: (for 1D) initial plot(not use wcs)
     -e: do expression before plot. Example: -e"{}/1000"
     -a: use all frames in fits files
     --name: create a new ds9 window or connect to a named ds9 window
@@ -34,7 +34,7 @@ usageStr="""ds10 filenames_group0 [options] [filenames_group1 [options]] ...
     --width: width for the ds9 window
     --height: width for the ds9 window
     --regions: open region file
-    --selfRegions: open region file with the same name
+    --selfRegions: open region file with the same name (*.fits use *.reg)
     --exec: exec commands after load all image
     --execFile: exec commands from file after load all image, default is ~/.ds10.exec.py
     --exit: not stay in python interactive mode

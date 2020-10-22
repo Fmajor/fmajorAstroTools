@@ -435,6 +435,7 @@ hb=""" in the following command list, "A==>B==>C" means this command is equivale
     d.pyfits: return the astropy.io.fits.hdu.image.PrimaryHDU of current frame
     d.xy:     the mouse pointer because a bigdot, click on image to get [x, y]
     d.kxy:    the mouse pointer because a bigdot, press a key with mouse on image to get [key, x, y]
+    d.file    get filename of current frame
 
 # getter and setter commands: you can use "command" to get value and "command=valeu" to set value, the 'getter' and 'setter' will tell you what you get and change using this command
     d.mode:   getter&setter: the mode in "Edit" menu, value could be none, region, crosshair, colorbar, pan, zoom, rotate, crop, catlog and exam
@@ -460,7 +461,10 @@ hb=""" in the following command list, "A==>B==>C" means this command is equivale
     d.window: getter&setter: (width, height)
     d.fo    : getter: list all frames
               setter: close all other frames except for this frames
-
+    d.c     : getter: get all comments in *.fits.comment
+              setter: add comments for *.fits[extname] to *.fits.comment
+    d.co    : getter: get all comments in *.fits.comment
+              setter: set unique comment for *.fits[extname] to *.fits.comment
 # functions
     d.ndarrayList(l): give a list of numpy 2d array to show them in new frames
 """
@@ -483,16 +487,16 @@ hr=""" # commands about regions: with getter and setter
                    setter: copy all tagged regions to other frame(s)
     d.us:          getter: try to find regions that have same tag name of the selected regions in other frame
                    setter: update position of regions that have same tag name of the selected regions in other frames
-    d.usa:         equivalent to d.us=d.frames
+    d.usa:         d.usa=True is equivalent to d.us=d.frames
     d.saut:        same as d.ca, but also select them
     d.sat:         select all tagged regions is this frame (some regions may have the same tag name)
-    d.ds:          delete all selected regions in this frame
+    d.ds:          d.ds=True will delete all selected regions in this frame
     d.cleanRegion: delete all regions in this frame
 # commands about plot:
     d.ps:   plot or update selected projections
     d.usp:  getter: same as d.us (in help of region)
             setter: same as d.us, and also plot these projections
-    d.usap: setter: equivalent to d.usp=d.frames
+    d.usap: setter: d.usap=True is equivalent to d.usp=d.frames
 """
 hpro="""
 # commands to generate projections in ds9:
@@ -630,8 +634,65 @@ class ds10(DS9, Region):#<==
         print("mode: {}: | ".format(self.get("mode")),end="")
         print("nan: {} | ".format(self.get("nan")),end="")
         print("orient: {} | ".format(self.get("orient")),end="")
+    @property
+    def file(self):
+      return self.get('file')
+    @property
+    def dfile(self):
+      f = self.get('file')
+      if '[' in f:
+        filename = ''.join(f.split('[')[:-1])
+        extname = f.split('[')[-1]
+        if not extname.endswith(']'):
+          raise Exception('bad filename: {}'.format(f))
+        extname = extname[:-1]
+        return {'filename': filename, 'extname': extname}
+      else:
+        return {'filename': filename, 'extname': None}
     #==>
     #<== set and get
+    @property
+    def c(self):
+      filename = self.dfile['filename']
+      comment_name = filename + '.comment'
+      if os.path.exists(comment_name):
+        with open(comment_name) as f:
+          result = f.readlines()
+        return result
+      else:
+        return None
+    @c.setter
+    def c(self, value):
+      dfile = self.dfile
+      filename = dfile['filename']
+      extname = dfile['extname']
+      comment_name = filename + '.comment'
+      with open(comment_name, 'a') as f:
+        exists = f.readlines()
+        if not len(exists):
+          f.write('{} ==> {}'.format(extname, value))
+        else:
+          f.write('\n{} ==> {}'.format(extname, value))
+    @property
+    def co(self):
+      return self.c
+    @co.setter
+    def co(self, value):
+      dfile = self.dfile
+      filename = dfile['filename']
+      extname = dfile['extname']
+      comment_name = filename + '.comment'
+      if os.path.exists(comment_name):
+        with open(comment_name, 'r') as f:
+          exists = f.readlines()
+        with open(comment_name, 'w') as f:
+          others = list(filter(lambda _:not _.startswith('{} ==> '.format(extname)), exists))
+          others.append('{} ==> {}'.format(extname, value))
+          f.write('\n'.join(others))
+      else:
+        with open(comment_name, 'w') as f:
+          f.write('{} ==> {}'.format(extname, value))
+
     @property
     def mode(self):
         return self.get("mode")
@@ -1529,10 +1590,13 @@ class ds10(DS9, Region):#<==
                 self.addRegion(regionType, params, configs=configs, tag=tagName, text=tagName)
         self.frame = thisFrame
     @property
-    def usa(self):
+    def usa(self,confirm):
+      return None
+    @usa.setter
+    def usa(self,confirm):
         '''update selectd regions to all frame(s)'''
-        t = input("do you want to update all selected regions IN ALL FRAMES? [0=no, 1=yes]")
-        if str(t)=="1":
+        # t = input("do you want to update all selected regions IN ALL FRAMES? [0=no, 1=yes]")
+        if str(confirm)==True:
             self.us = self.frames
     @property
     def ca(self):
@@ -1591,9 +1655,12 @@ class ds10(DS9, Region):#<==
         return allUniqueTag
     @property
     def ds(self):
+      return None
+    @ds.setter
+    def ds(self,confirm):
         'delete selected regions in this frame'
-        t = input("do you want to delete all selected regions? [0=no, 1=yes]")
-        if str(t)=="1":
+        # t = input("do you want to delete all selected regions? [0=no, 1=yes]")
+        if confirm==True:
             self.set("regions delete select")
     #==> select, modify tagged region
     #<== about figure plot
@@ -1745,11 +1812,13 @@ class ds10(DS9, Region):#<==
         self.frame = thisFrame
     @property
     def usap(self):
+      return None
+    @usap.setter
+    def usap(self,confirm):
         '''update selectd regions to all frame(s) and update their figure'''
-        t = input("do you want to update all selected regions and their FIGURE IN ALL FRAMES? [0=no, 1=yes]")
-        if str(t)=="1":
+        # t = input("do you want to update all selected regions and their FIGURE IN ALL FRAMES? [0=no, 1=yes]")
+        if confirm == True:
             self.usp = self.frames
-
     @property
     def ps_step(self):
         try:
@@ -1782,7 +1851,7 @@ class ds10(DS9, Region):#<==
     def usap_step(self):
         try:
             self._plotType='step'
-            self.usap
+            self.usap=True
         finally:
             self._plotType='plot'
 
@@ -2103,6 +2172,14 @@ class ds10(DS9, Region):#<==
     @property
     def h(self):
         print(h)
+    @property
+    def ha(self):
+        print(h)
+        print(hb)
+        print(hr)
+        print(hpro)
+        print(hc)
+        print(hf)
     @property
     def hb(self):
         print(hb)
