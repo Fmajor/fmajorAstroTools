@@ -130,6 +130,7 @@ print keys in 'short' mode (the prints above are called 'long' mode) using ``-s`
 control extensions using ``-a`` and ``-f`` options
 * without this two options, the default extension to print is 0
 * ``-f0,1,2`` means print info of extensions 0, 1 and 2
+  * two more methods to input frame range: ``-f0~3``, ``-f1:10:2`` (python slice)
 * ``-a`` means print info of all extensions::
 
     $ imheader N20150903S0254.fits vstandard_comb.fits -k"object,date,exptime" -s -a
@@ -159,14 +160,12 @@ control extensions using ``-a`` and ``-f`` options
 or you can add the extension name directly to a filename like this (you can not do this in zsh, since zsh parse '[]' itself)::
 
     $ imheader N20150903S0254.fits[0] -k"object,date,exptime" -s
-    [0]
                   FileName   OBJECT       DATE EXPTIME
     N20150903S0254.fits[0] GCALflat 2015-09-03     1.2
     $ cat test_list_ext.txt
     N20150903S0254.fits[1]
     N20150903S0255.fits[0]
     $ imheader test_list_ext.txt -k"object,date,exptime" -s
-    [0]
                   FileName   OBJECT       DATE EXPTIME
     N20150903S0254.fits[1]        -          -       -
     N20150903S0255.fits[0] GCALflat 2015-09-03     1.2
@@ -252,6 +251,13 @@ filter filer using bool operation, ``-b``, there should be no blank between ``(a
     N20150906S0078.fits[0] HIP105315 2015-09-06     3.0
     $ imheader N2015090* bbody*  -k"object,date,exptime" -s -b"'HIP'(in){OBJECT}"
     filter: 'HIP' in {OBJECT}, boolFrames:
+                  FileName    OBJECT       DATE EXPTIME
+    N20150904S0254.fits[0]   HIP7202 2015-09-04     3.0
+    N20150905S0124.fits[0] HIP105315 2015-09-05     3.0
+    N20150906S0078.fits[0] HIP105315 2015-09-06     3.0
+    N20150907S0030.fits[0] HIP115119 2015-09-07     0.2
+    $ imheader N2015090* bbody*  -k"object,date,exptime" -s -b"{OBJECT}.startswith('HIP')"
+    filter:{OBJECT}.startswith('HIP'), boolFrames:
                   FileName    OBJECT       DATE EXPTIME
     N20150904S0254.fits[0]   HIP7202 2015-09-04     3.0
     N20150905S0124.fits[0] HIP105315 2015-09-05     3.0

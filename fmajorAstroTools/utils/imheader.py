@@ -24,7 +24,8 @@ warnings.filterwarnings("ignore")
 def isFitsFile(name, fitsExts):
     for eachExt in fitsExts:
         N = len(eachExt)
-        if name[-N:]==eachExt or "{}[".format(eachExt) in name:
+        # for *.fits[frame] version
+        if name.endswith(eachExt) or "{}[".format(eachExt) in name:
             return True
     return False
 
@@ -204,12 +205,12 @@ def main(args, configs={}): #<==
             auxFrames.extend(__)
         else:
             auxFrames.append(int(each))
-    print(auxFrames)
     checkFrame = False
     if frames!="0":
         checkFrame = True
     frames = [int(each) for each in auxFrames]
 
+    # convert bool exp string to python code
     if boolExp:
         boolExp = inRe.sub(" in ", boolExp)
         boolExp = notInRe.sub(" not in ", boolExp)
@@ -251,7 +252,7 @@ def main(args, configs={}): #<==
             todoFiles.extend(thisTodoFiles)
 
     #!! set todo exts
-    # now to figure extensions for each file
+    # now to get extensions for each file
     reExpFrame = re.compile(r"\[(.*)\]")
     todoFrames = ["?"] * len(todoFiles)
     for i,eachFile in enumerate(todoFiles):
@@ -527,6 +528,7 @@ def main(args, configs={}): #<==
                         pprint.pprint(eachHeader)
                     elif headerMode=="dict": # make dict print
                         thisKeys = sorted(list(eachHeader))
+                        thisKeys = list(filter(lambda _:_, thisKeys))
                         lastKey=""
                         for eachKey in thisKeys:
                             if eachKey[0]!=lastKey:
