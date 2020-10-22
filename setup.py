@@ -11,9 +11,18 @@ import sys
 name="fmajorAstroTools"
 version="0.0.2"
 packages = ["fmajorAstroTools"]
-install_requires=['ipython', 'matplotlib', 'numpy', 'astropy', "colorama", "scipy", "pyds9", "pyqt5"]
+install_requires=[
+    'ipython',
+    'matplotlib',
+    'numpy',
+    'astropy',
+    "colorama",
+    "scipy",
+    "pyds9@git+https://github.com/ericmandel/pyds9.git#egg=pyds9",
+    "pyqt5",
+]
 author='Jin Wu'
-author_email='wujinnnnn@gmail.com'
+author_email='wujin_astro@pku.edu.com'
 license='MIT'
 description="Fmajor's Astro Tools."
 long_description=""
