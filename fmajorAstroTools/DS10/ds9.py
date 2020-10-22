@@ -922,11 +922,11 @@ class ds10(DS9, Region):#<==
         return self._thisData
     @property
     def pyfits(self):
-        self._thisPyfits = self.get_pyfits()[0]
+        self._thisPyfits = self.get_fits()[0]
         return self._thisPyfits
     @property
     def header(self):
-        self._thisHeader=self.get_pyfits()[0].header
+        self._thisHeader=self.get_fits()[0].header
         return self._thisHeader
     def fits(self, name, frame=None):
         "open a file in new frame"

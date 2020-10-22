@@ -361,7 +361,11 @@ def main(args, configs={}): #<==
         fileNameReturns = []
         printed = False
         for i, (eachFile, eachFrames) in enumerate(zip(todoFiles, todoFrames)):
-            obj = pyfits.open(eachFile)
+            try:
+                obj = pyfits.open(eachFile)
+            except Exception as e:
+                print('open {} error'.format(eachFile))
+                raise
             objN = len(obj)
             filePrintName = getFilePrintName(eachFile, fileNameType)
             if eachFrames=="all":
